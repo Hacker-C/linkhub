@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { AuthButtons } from './AuthButtons';
 import { UserNav } from './UserNav';
-import { Icons } from './icons';
+import { Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button"; // For mobile auth menu
 
@@ -46,7 +46,7 @@ export function Header({
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="打开主菜单">
-                  <Icons.menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[260px] sm:w-[300px] p-0">
@@ -57,7 +57,7 @@ export function Header({
                     </Link>
                     <SheetClose asChild>
                       <Button variant="ghost" size="icon" aria-label="关闭菜单">
-                        <Icons.close className="h-5 w-5" />
+                        <X className="h-5 w-5" />
                       </Button>
                     </SheetClose>
                   </div>

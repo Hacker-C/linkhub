@@ -3,7 +3,7 @@ import React from 'react';
 import { Category } from '@/lib/types';
 import { CategoryItem } from './CategoryItem';
 import { Button } from '@/components/ui/button';
-import { Icons } from './icons';
+import { Plus } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SidebarProps {
@@ -47,7 +47,7 @@ export function Sidebar({
           className="mt-auto w-full border-dashed"
           onClick={onAddCategory}
         >
-          <Icons.add className="h-5 w-5 mr-2" />
+          <Plus className="h-5 w-5 mr-2" />
           添加分类
         </Button>
       )}

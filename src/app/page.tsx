@@ -7,7 +7,7 @@ import { BookmarkList } from '@/components/BookmarkList';
 import { LayoutSwitcher } from '@/components/LayoutSwitcher';
 import { SearchInput } from '@/components/SearchInput';
 import { Button } from '@/components/ui/button';
-import { Icons } from '@/components/icons';
+import { Plus } from 'lucide-react';
 import { Bookmark, Category } from '@/lib/types';
 import { MobileNavMenu } from '@/components/MobileNavMenu'; // For mobile category navigation
 
@@ -171,7 +171,7 @@ export default function HomePage() {
               <LayoutSwitcher currentLayout={layout} onLayoutChange={setLayout} />
               {isLoggedIn && (
                 <Button onClick={handleAddBookmark}>
-                  <Icons.add className="h-5 w-5 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   添加收藏
                 </Button>
               )}
@@ -188,7 +188,7 @@ export default function HomePage() {
               onClick={handleAddBookmark}
               aria-label="添加收藏"
             >
-              <Icons.add className="h-7 w-7" />
+              <Plus className="h-7 w-7" />
             </Button>
           )}
         </main>

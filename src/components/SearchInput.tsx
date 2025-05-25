@@ -1,11 +1,11 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import { Icons } from './icons';
+import { Search } from 'lucide-react';
 
 export function SearchInput() {
   return (
     <div className="relative">
-      <Icons.search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         type="search"
         placeholder="搜索收藏..."

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Icons } from './icons';
+import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar'; // Reuse the Sidebar component
 import { Category } from '@/lib/types';
 
@@ -34,7 +34,7 @@ export function MobileNavMenu({
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" aria-label="打开目录">
-          <Icons.menu className="h-6 w-6" />
+          <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-[280px] p-0">

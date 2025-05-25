@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Category } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Icons } from './icons';
+import { Folder, Globe, Lock, ChevronRight, MoreHorizontal, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -41,10 +41,10 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
   const CategoryLinkContent = () => (
     <>
       <div className="flex items-center space-x-2 flex-grow">
-        {level === 0 && (category.id === 'all' ? <Icons.allCollections className="h-5 w-5" /> : <Icons.folder className="h-5 w-5" />)}
+        {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5" /> : <Folder className="h-5 w-5" />)}
         <span className={cn("truncate", level > 0 && "text-sm")}>{category.name}</span>
         <span className="visibility-icon" title={category.isPublic ? "公开" : "私有"}>
-          {category.isPublic ? <Icons.globe className="h-3 w-3"/> : <Icons.lock className="h-3 w-3"/>}
+          {category.isPublic ? <Globe className="h-3 w-3"/> : <Lock className="h-3 w-3"/>}
         </span>
       </div>
       <span className={cn("ml-auto text-xs font-normal", isActive ? "text-primary" : "text-muted-foreground")}>
@@ -53,7 +53,7 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="category-more-actions-btn h-6 w-6 opacity-0 group-hover:opacity-100 focus:opacity-100 ml-1" onClick={(e) => e.stopPropagation()}>
-            <Icons.moreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
@@ -84,13 +84,13 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
           <div className="flex items-center space-x-2 flex-grow">
             <CollapsibleTrigger asChild className="collapsible-trigger-button -ml-1 mr-1">
               <Button variant="ghost" size="icon" className={cn("h-6 w-6 p-0", isActive && "text-primary")}>
-                <Icons.chevronRight className={cn("h-4 w-4 chevron-icon", isSubMenuOpen && "rotate-90")} />
+                <ChevronRight className={cn("h-4 w-4 chevron-icon", isSubMenuOpen && "rotate-90")} />
               </Button>
             </CollapsibleTrigger>
-            {level === 0 && (category.id === 'all' ? <Icons.allCollections className="h-5 w-5" /> : <Icons.folder className="h-5 w-5" />)}
+            {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5" /> : <Folder className="h-5 w-5" />)}
             <span className="truncate">{category.name}</span>
             <span className="visibility-icon" title={category.isPublic ? "公开" : "私有"}>
-              {category.isPublic ? <Icons.globe className="h-3 w-3"/> : <Icons.lock className="h-3 w-3"/>}
+              {category.isPublic ? <Globe className="h-3 w-3"/> : <Lock className="h-3 w-3"/>}
             </span>
           </div>
           <span className={cn("ml-auto text-xs font-normal mr-1", isActive ? "text-primary" : "text-muted-foreground")}>
@@ -99,7 +99,7 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="category-more-actions-btn h-6 w-6 opacity-0 group-hover:opacity-100 focus:opacity-100" onClick={(e) => e.stopPropagation()}>
-                <Icons.moreHorizontal className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>

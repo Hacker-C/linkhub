@@ -4,7 +4,7 @@ import Image from 'next/image'; // For favicons
 import { Bookmark } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Icons } from './icons';
+import { MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +50,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="card-action-button h-7 w-7" onClick={(e) => e.preventDefault()}>
-                <Icons.moreHorizontal className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -78,7 +78,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="card-action-button h-7 w-7 opacity-0 group-hover:opacity-100 focus:opacity-100 -mr-2 -mt-2" onClick={(e) => e.preventDefault()}>
-                <Icons.moreHorizontal className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
