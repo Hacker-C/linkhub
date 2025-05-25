@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Icons } from './icons';
+import { LayoutGrid, List } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface LayoutSwitcherProps {
@@ -23,7 +23,7 @@ export function LayoutSwitcher({ currentLayout, onLayoutChange }: LayoutSwitcher
               onClick={() => onLayoutChange('grid')}
               aria-label="网格视图"
             >
-              <Icons.grid className={`w-5 h-5 ${currentLayout === 'grid' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <LayoutGrid className={`w-5 h-5 ${currentLayout === 'grid' ? 'text-primary' : 'text-muted-foreground'}`} />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -40,7 +40,7 @@ export function LayoutSwitcher({ currentLayout, onLayoutChange }: LayoutSwitcher
               onClick={() => onLayoutChange('list')}
               aria-label="列表视图"
             >
-              <Icons.list className={`w-5 h-5 ${currentLayout === 'list' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <List className={`w-5 h-5 ${currentLayout === 'list' ? 'text-primary' : 'text-muted-foreground'}`} />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
