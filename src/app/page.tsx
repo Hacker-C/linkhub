@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Bookmark, Category } from '@/lib/types';
 import { MobileNavMenu } from '@/components/MobileNavMenu'; // For mobile category navigation
-import { SidebarToggleButton } from '@/components/SidebarToggleButton';
 
 // Mock Data
 const MOCK_CATEGORIES: Category[] = [
@@ -50,12 +49,7 @@ export default function HomePage() {
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>('all');
   const [displayedBookmarks, setDisplayedBookmarks] = useState<Bookmark[]>(MOCK_BOOKMARKS);
   const [currentCategoryName, setCurrentCategoryName] = useState<string>("所有收藏");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   useEffect(() => {
     // Filter bookmarks based on activeCategoryId
@@ -138,26 +132,19 @@ export default function HomePage() {
         onLogout={handleLogout}
       />
       <div className="flex h-[calc(100vh-4rem)]"> {/* Adjust height for sticky nav */}
-        <SidebarToggleButton isSidebarOpen={isSidebarOpen} onClick={toggleSidebar} />
         {/* Desktop Sidebar */}
-        {isSidebarOpen && (
-          <div className="hidden md:flex">
-            <Sidebar
-              categories={categories}
-              activeCategoryId={activeCategoryId}
-              onSelectCategory={handleSelectCategory}
-              onToggleCategoryVisibility={handleToggleCategoryVisibility}
-              onAddCategory={handleAddCategory}
-              isLoggedIn={isLoggedIn}
-            />
-          </div>
-        )}
+        <div className="hidden md:flex">
+          <Sidebar
+            categories={categories}
+            activeCategoryId={activeCategoryId}
+            onSelectCategory={handleSelectCategory}
+            onToggleCategoryVisibility={handleToggleCategoryVisibility}
+            onAddCategory={handleAddCategory}
+            isLoggedIn={isLoggedIn}
+          />
+        </div>
 
-        <main
-          className={`flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900/50 transition-all duration-300 ease-in-out ${
-            isSidebarOpen ? 'md:ml-64' : 'md:ml-16'
-          }`}
-        >
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900/50">
           {/* Mobile Header (inside main for scrolling) */}
           <header className="md:hidden flex items-center justify-between mb-6">
             <MobileNavMenu
