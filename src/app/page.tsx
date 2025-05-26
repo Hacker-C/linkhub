@@ -184,7 +184,7 @@ export default function HomePage() {
           {isLoggedIn && (
             <Button
               size="icon"
-              className="md:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-20"
+              className="md:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
               onClick={handleAddBookmark}
               aria-label="添加收藏"
             >
