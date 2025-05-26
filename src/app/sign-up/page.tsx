@@ -5,13 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -39,52 +40,51 @@ export default function SignUpPage() {
     // Handle sign-up logic here
   };
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-sm">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Sign Up</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <Input
-                type="email"
-                placeholder="Email"
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Input
-                type="password"
-                placeholder="Password"
-                {...register("password")}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Input
-                type="password"
-                placeholder="Confirm Password"
-                {...register("confirmPassword")}
-              />
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
-              )}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full">
-              Sign Up
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
-  );
+  return (<AuthLayout>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Sign Up</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-1">
+          <Input
+            type="email"
+            placeholder="Email"
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Input
+            type="password"
+            placeholder="Password"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className='flex flex-col items-start'>
+        <Button type="submit" className="w-full mt-3">
+          Sign Up
+        </Button>
+        <div className="w-full flex justify-end mt-2">
+          <p>Already have an account? <Link href='/login' className='underline'>Login</Link> </p>
+        </div>
+      </CardFooter>
+    </form>
+  </AuthLayout>)
 }
