@@ -5,7 +5,8 @@ import { AuthButtons } from './AuthButtons';
 import { UserNav } from './UserNav';
 import { Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button"; // For mobile auth menu
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export function Header({
                          isLoggedIn,
@@ -26,9 +27,10 @@ export function Header({
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">我的收藏</span>
+              <span className="text-2xl font-bold text-primary">LinkHub</span>
             </Link>
           </div>
+
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
@@ -38,11 +40,15 @@ export function Header({
               ) : (
                 <AuthButtons onLoginClick={onLogin} onRegisterClick={onRegister} className="space-x-2" />
               )}
+              <div className='ml-2'>
+                <ModeToggle />
+              </div>
             </div>
           </div>
 
           {/* Mobile Navigation Trigger */}
           <div className="-mr-2 flex md:hidden">
+            <ModeToggle />
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="打开主菜单">
@@ -53,7 +59,7 @@ export function Header({
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-6">
                     <Link href="/" className="flex-shrink-0" onClick={() => setIsMobileMenuOpen(false)}>
-                      <span className="text-xl font-bold text-primary">我的收藏</span>
+                      <span className="text-xl font-bold text-primary">LinkHub</span>
                     </Link>
                     <SheetClose asChild>
                       <Button variant="ghost" size="icon" aria-label="关闭菜单">
@@ -80,6 +86,7 @@ export function Header({
                       <Button className="w-full" onClick={() => { onRegister(); setIsMobileMenuOpen(false);}}>注册</Button>
                     </div>
                   )}
+
                 </div>
               </SheetContent>
             </Sheet>

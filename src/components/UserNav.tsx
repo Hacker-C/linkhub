@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Settings } from "lucide-react";
 
 interface UserNavProps {
   onLogoutClick: () => void;
@@ -19,15 +20,12 @@ interface UserNavProps {
   avatarSrc?: string;
 }
 
-export function UserNav({ onLogoutClick, userName = "用户", userEmail = "user@example.com", avatarSrc }: UserNavProps) {
+export function UserNav({ onLogoutClick, userName = "用户", userEmail = "user@example.com" }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={avatarSrc || `https://placehold.co/32x32/E0E7FF/3730A3?text=${userName.charAt(0).toUpperCase()}`} alt={userName} />
-            <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <Settings />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -41,9 +39,6 @@ export function UserNav({ onLogoutClick, userName = "用户", userEmail = "user@
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            我的账户
-          </DropdownMenuItem>
           {/* Add more items like Settings, etc. */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
