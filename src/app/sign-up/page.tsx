@@ -1,104 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  // CardDescription, // Not used, can be removed if not planned for future
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+const signUpSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"], // Path to field where error is shown
+});
+
+type SignUpFormValues = z.infer<typeof signUpSchema>;
+
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
+  });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-
-    let isValid = true;
-
-    if (!email) {
-      setEmailError("Email is required.");
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Email is invalid.");
-      isValid = false;
-    }
-
-    if (!password) {
-      setPasswordError("Password is required.");
-      isValid = false;
-    }
-
-    if (!confirmPassword) {
-      setConfirmPasswordError("Confirm password is required.");
-      isValid = false;
-    } else if (password && password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
-      isValid = false;
-    }
-
-    if (isValid) {
-      console.log({ email, password });
-      // Proceed with actual sign-up logic here
-    }
+  const onSubmit = (data: SignUpFormValues) => {
+    const { confirmPassword, ...submissionData } = data;
+    console.log(submissionData);
+    // Handle sign-up logic here
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-sm">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">Sign Up</CardTitle>
-            {/* <CardDescription>Create your account.</CardDescription> */}
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-1"> {/* Reduced space-y from 2 to 1 for tighter packing with error message */}
+            <div className="space-y-1">
               <Input
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (emailError) setEmailError("");
-                }}
+                {...register("email")}
               />
-              {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
-            <div className="space-y-1"> {/* Reduced space-y from 2 to 1 */}
+            <div className="space-y-1">
               <Input
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (passwordError) setPasswordError("");
-                }}
+                {...register("password")}
               />
-              {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password.message}</p>
+              )}
             </div>
-            <div className="space-y-1"> {/* Reduced space-y from 2 to 1 */}
+            <div className="space-y-1">
               <Input
                 type="password"
                 placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  if (confirmPasswordError) setConfirmPasswordError("");
-                }}
+                {...register("confirmPassword")}
               />
-              {confirmPasswordError && <p className="text-red-500 text-xs mt-1">{confirmPasswordError}</p>}
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+              )}
             </div>
           </CardContent>
           <CardFooter>
