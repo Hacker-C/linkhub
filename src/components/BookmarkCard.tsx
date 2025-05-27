@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // Add useState
 import Link from 'next/link';
 import Image from 'next/image'; // For favicons
 import { Bookmark } from '@/lib/types';
@@ -12,13 +12,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from '@/components/ui/card'; // Using shadcn Card as base
+import { HorizontalProgressBar } from '@/components/ui/HorizontalProgressBar'; 
+import { CircularProgressBar } from '@/components/ui/CircularProgressBar';   
+import { EditBookmarkModal } from '@/components/bookmarks/EditBookmarkModal'; 
 
 interface BookmarkCardProps {
-  bookmark: Bookmark;
+  bookmark: Bookmark; // Renamed from initialBookmark for clarity in props definition
   isListView: boolean;
 }
 
-export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
+export function BookmarkCard({ bookmark: initialBookmark, isListView }: BookmarkCardProps) {
+  const [bookmark, setBookmark] = useState<Bookmark>(initialBookmark); 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const handleSaveBookmark = (updatedBookmark: Bookmark) => {
+    setBookmark(updatedBookmark); 
+    console.log("Bookmark updated (client-side):", updatedBookmark);
+    // In a real app, you'd call an API to save to backend here
+    setIsEditModalOpen(false);
+  };
+
   const FaviconDisplay = () => (
     bookmark.favicon ? (
       <Image
@@ -38,65 +51,111 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
 
   if (isListView) {
     return (
-      <div className="bookmark-item"> {/* Styles for this are in globals.css under .layout-list */}
-        <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="card-link-wrapper group">
-          <div className="card-header">
-            <div className="card-title-section items-center space-x-3">
-              <FaviconDisplay />
-              <h3 className="card-title">{bookmark.title}</h3>
-              <p className="card-domain">{bookmark.domain}</p>
-            </div>
+      <>
+        <div className="bookmark-item"> {/* Styles for this are in globals.css under .layout-list */}
+          {/* Main content: icon, title, domain */}
+          <div className="flex items-center flex-grow min-w-0 space-x-3 group"> {/* Link wrapper is now this div */}
+            <FaviconDisplay />
+            <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="flex-grow min-w-0">
+              <div className="card-title-section">
+                <h3 className="card-title truncate">{bookmark.title}</h3>
+                <p className="card-domain truncate">{bookmark.domain}</p>
+              </div>
+            </Link>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="card-action-button h-7 w-7" onClick={(e) => e.preventDefault()}>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>编辑</DropdownMenuItem>
-              <DropdownMenuItem>移动到...</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </Link>
-      </div>
+          
+          {/* Right aligned section: progress bar and actions menu */}
+          <div className="flex items-center space-x-3 flex-shrink-0 ml-4">
+            {bookmark.readingProgress !== undefined && (
+              <div className="w-28"> {/* Fixed width for progress bar container */}
+                <HorizontalProgressBar value={bookmark.readingProgress || 0} className="h-1.5" />
+              </div>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="card-action-button h-7 w-7" onClick={(e) => e.preventDefault()}> {/* Ensure button is not part of the link */}
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => setIsEditModalOpen(true)}>编辑</DropdownMenuItem>
+                <DropdownMenuItem>移动到...</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        <EditBookmarkModal
+          isOpen={isEditModalOpen}
+          onOpenChange={setIsEditModalOpen}
+          bookmark={bookmark} 
+          onSave={handleSaveBookmark}
+        />
+      </>
     );
   }
 
   // Grid View (Card)
   return (
-    <Card className="bookmark-item group overflow-hidden transition-shadow hover:shadow-xl">
-      <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="card-link-wrapper block p-5">
-        <div className="card-header flex items-start justify-between">
-          <div className="card-title-section flex items-center space-x-3">
-            <FaviconDisplay />
-            <h3 className="card-title text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors">
-              {bookmark.title}
-            </h3>
+    <>
+      <Card className="bookmark-item group overflow-hidden transition-shadow hover:shadow-xl flex flex-col"> {/* Added flex flex-col */}
+        <div className="p-5 flex-grow"> {/* Added flex-grow */}
+          <div className="card-header flex items-start justify-between mb-2"> {/* Added mb-2 */}
+            <div className="card-title-section flex items-start space-x-3">
+              <FaviconDisplay />
+              <div className="flex-grow min-w-0"> {/* Added min-w-0 for better truncation if title is long */}
+                <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block">
+                  <h3 className="card-title text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors truncate">
+                    {bookmark.title}
+                  </h3>
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-col items-end space-y-1"> {/* Container for dropdown and progress */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="card-action-button h-7 w-7 opacity-0 group-hover:opacity-100 focus:opacity-100" onClick={(e) => e.preventDefault()}>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => setIsEditModalOpen(true)}>编辑</DropdownMenuItem>
+                  <DropdownMenuItem>移动到...</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* Circular Progress Bar for Grid View - Placed below dropdown, aligned right */}
+              {bookmark.readingProgress !== undefined && (
+                <div className="opacity-80 group-hover:opacity-100 transition-opacity duration-200">
+                  <CircularProgressBar value={bookmark.readingProgress || 0} size={28} strokeWidth={3} textClassName="text-[9px]" />
+                </div>
+              )}
+            </div>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="card-action-button h-7 w-7 opacity-0 group-hover:opacity-100 focus:opacity-100 -mr-2 -mt-2" onClick={(e) => e.preventDefault()}>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>编辑</DropdownMenuItem>
-              <DropdownMenuItem>移动到...</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {bookmark.description && (
+            <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block mt-1"> {/* Added mt-1 */}
+              <p className="card-description text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                {bookmark.description}
+              </p>
+            </Link>
+          )}
         </div>
-        {bookmark.description && (
-          <p className="card-description text-sm text-muted-foreground mt-2 leading-relaxed line-clamp-2">
-            {bookmark.description}
+        <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block px-5 pb-4 pt-2"> {/* Adjusted padding for domain */}
+          <p className="card-domain text-xs text-primary truncate">
+            {bookmark.domain}
           </p>
-        )}
-        <p className="card-domain text-xs text-primary mt-3 truncate">
-          {bookmark.domain}
-        </p>
-      </Link>
-    </Card>
+        </Link>
+      </Card>
+      <EditBookmarkModal
+        isOpen={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        bookmark={bookmark}
+        onSave={handleSaveBookmark}
+      />
+    </>
   );
 }
+// This is a placeholder for the diff tool.
+// The actual content has been provided above in the SEARCH/REPLACE blocks.
+// If you are seeing this, it means the diff tool did not correctly process the combined diff.
+// Please refer to the individual SEARCH/REPLACE blocks for BookmarkCard.tsx.

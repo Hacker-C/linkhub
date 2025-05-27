@@ -69,6 +69,8 @@ model Bookmark {
   domainName   String? @map("domain_name")
   /// Optional order for displaying bookmarks within a category.
   displayOrder Int?    @map("display_order")
+  /// Optional reading progress percentage (e.g. for articles, books).
+  readingProgress Int?    @default(0) @map("reading_progress")
 
   /// Timestamp of when the bookmark was created.
   createdAt DateTime @default(now()) @map("created_at")
