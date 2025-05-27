@@ -13,6 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import { useMutation } from "@tanstack/react-query";
+import { loginAction } from "@/actions/users";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
+import { Session } from "@supabase/supabase-js";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -30,9 +37,22 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log(data);
-    // Handle login logic here
+  const router = useRouter()
+  const { login } = useAuth()
+
+  const loginMutation = useMutation({
+    mutationFn: loginAction
+  })
+  const { isPending, data: result } = loginMutation
+  const onSubmit = async (data: LoginFormValues) => {
+    const result = await loginMutation.mutateAsync(data)
+    if (result.errorMessage) {
+      toast.error(result.errorMessage)
+    } else {
+      toast.success('Login success!')
+      login(result.data?.session as Session)
+      router.push('/admin')
+    }
   };
 
   return (<AuthLayout>
@@ -64,8 +84,12 @@ export default function LoginPage() {
         </div>
       </CardContent>
       <CardFooter className='flex flex-col items-start'>
+        {result?.errorMessage && <p className="text-destructive text-sm">{result?.errorMessage}</p>}
         <Button type="submit" className="w-full mt-3">
-          Login
+          { isPending
+            ? <><Loader2 className="animate-spin" /> Logging in...</>
+            : 'Login'
+          }
         </Button>
         <div className="w-full flex justify-end mt-2">
           <p>

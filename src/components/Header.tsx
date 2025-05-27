@@ -7,19 +7,43 @@ import { Menu, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
+import { useMutation } from "@tanstack/react-query";
+import { logoutAction } from "@/actions/users";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
 
 export function Header({
                          isLoggedIn,
-                         onLogin,
-                         onRegister,
-                         onLogout
                        }: {
   isLoggedIn: boolean;
-  onLogin: () => void;
-  onRegister: () => void;
-  onLogout: () => void;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter()
+  const { logout } = useAuth()
+
+  const logoutMutation = useMutation({
+    mutationFn: logoutAction
+  })
+
+  const onLogout = () => {
+    logoutMutation.mutateAsync().then(res => {
+      if (res.errorMessage) {
+        toast.error(res.errorMessage)
+      } else {
+        logout()
+        router.replace('/login')
+      }
+    })
+  }
+
+  const onLogin = () => {
+    router.push('/login')
+  }
+
+  const onRegister = () => {
+    router.push('/sign-up')
+  }
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-50">

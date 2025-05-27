@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Bookmark, Category } from '@/lib/types';
 import { MobileNavMenu } from '@/components/MobileNavMenu';
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
 
 // Mock Data
 const MOCK_CATEGORIES: Category[] = [
@@ -44,14 +44,12 @@ const MOCK_BOOKMARKS: Bookmark[] = [
 
 
 export default function HomePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock login state
+  const { isLoggedIn } = useAuth()
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [categories, setCategories] = useState<Category[]>(MOCK_CATEGORIES);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>('all');
   const [displayedBookmarks, setDisplayedBookmarks] = useState<Bookmark[]>(MOCK_BOOKMARKS);
   const [currentCategoryName, setCurrentCategoryName] = useState<string>("所有收藏");
-  const router = useRouter()
-
 
   useEffect(() => {
     // Filter bookmarks based on activeCategoryId
@@ -85,24 +83,6 @@ export default function HomePage() {
     }
   }, [activeCategoryId, categories]);
 
-  const handleLogin = () => {
-    console.log("Login action triggered");
-    // setIsLoggedIn(true);
-    // Actual login logic would be here
-    router.push('/login')
-  };
-
-  const handleRegister = () => {
-    console.log("Register action triggered");
-    // Actual register logic
-    router.push('/sign-up')
-  };
-
-  const handleLogout = () => {
-    console.log("Logout action triggered");
-    setIsLoggedIn(false);
-  };
-
   const handleSelectCategory = (categoryId: string) => {
     setActiveCategoryId(categoryId);
   };
@@ -131,9 +111,6 @@ export default function HomePage() {
     <>
       <Header
         isLoggedIn={isLoggedIn}
-        onLogin={handleLogin}
-        onRegister={handleRegister}
-        onLogout={handleLogout}
       />
       <div className="flex h-[calc(100vh-4rem)]"> {/* Adjust height for sticky nav */}
         {/* Desktop Sidebar */}

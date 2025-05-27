@@ -142,6 +142,7 @@ exports.Prisma.BookmarkScalarFieldEnum = {
   ogImageUrl: 'ogImageUrl',
   domainName: 'domainName',
   displayOrder: 'displayOrder',
+  readingProgress: 'readingProgress',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

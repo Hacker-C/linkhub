@@ -25,6 +25,8 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
   const [bookmark, setBookmark] = useState<Bookmark>(initialBookmark); 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+  const bookmarkVisible = !!bookmark.readingProgress
+
   const handleSaveBookmark = (updatedBookmark: Bookmark) => {
     setBookmark(updatedBookmark); 
     console.log("Bookmark updated (client-side):", updatedBookmark);
@@ -52,7 +54,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
   if (isListView) {
     return (
       <>
-        <div className="bookmark-item"> {/* Styles for this are in globals.css under .layout-list */}
+        <div className="bookmark-item h-12 p-4"> {/* Styles for this are in globals.css under .layout-list */}
           {/* Main content: icon, title, domain */}
           <div className="flex items-center flex-grow min-w-0 space-x-3 group"> {/* Link wrapper is now this div */}
             <FaviconDisplay />
@@ -65,8 +67,8 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
           </div>
           
           {/* Right aligned section: progress bar and actions menu */}
-          <div className="flex items-center space-x-3 flex-shrink-0 ml-4">
-            {bookmark.readingProgress !== undefined && (
+          <div className={"flex items-center space-x-3 flex-shrink-0 ml-4"} >
+            {bookmarkVisible && (
               <div className="w-28"> {/* Fixed width for progress bar container */}
                 <HorizontalProgressBar value={bookmark.readingProgress || 0} className="h-1.5" />
               </div>
@@ -80,7 +82,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={() => setIsEditModalOpen(true)}>编辑</DropdownMenuItem>
                 <DropdownMenuItem>移动到...</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive focus:text-destructive-foreground">删除</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -88,7 +90,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
         <EditBookmarkModal
           isOpen={isEditModalOpen}
           onOpenChange={setIsEditModalOpen}
-          bookmark={bookmark} 
+          bookmark={bookmark}
           onSave={handleSaveBookmark}
         />
       </>
@@ -99,7 +101,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
   return (
     <>
       <Card className="bookmark-item group overflow-hidden transition-shadow hover:shadow-xl flex flex-col"> {/* Added flex flex-col */}
-        <div className="p-5 flex-grow"> {/* Added flex-grow */}
+        <div className="px-5 py-2 flex-grow"> {/* Added flex-grow */}
           <div className="card-header flex items-start justify-between mb-2"> {/* Added mb-2 */}
             <div className="card-title-section flex items-start space-x-3">
               <FaviconDisplay />
@@ -121,15 +123,17 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onSelect={() => setIsEditModalOpen(true)}>编辑</DropdownMenuItem>
                   <DropdownMenuItem>移动到...</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive focus:text-destructive-foreground">删除</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               {/* Circular Progress Bar for Grid View - Placed below dropdown, aligned right */}
-              {bookmark.readingProgress !== undefined && (
-                <div className="opacity-80 group-hover:opacity-100 transition-opacity duration-200">
-                  <CircularProgressBar value={bookmark.readingProgress || 0} size={28} strokeWidth={3} textClassName="text-[9px]" />
+              {
+                <div className={cn("opacity-80 group-hover:opacity-100 transition-opacity duration-200", 
+                  bookmarkVisible ? '' : 'invisible'
+                )}>
+                  <CircularProgressBar value={bookmark.readingProgress || 0} size={40} strokeWidth={3} textClassName="text-[9px]" />
                 </div>
-              )}
+              }
             </div>
           </div>
           {bookmark.description && (
@@ -140,7 +144,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
             </Link>
           )}
         </div>
-        <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block px-5 pb-4 pt-2"> {/* Adjusted padding for domain */}
+        <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block px-5 pb-2 pt-2"> {/* Adjusted padding for domain */}
           <p className="card-domain text-xs text-primary truncate">
             {bookmark.domain}
           </p>

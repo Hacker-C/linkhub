@@ -13,6 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import { registerAction } from "@/actions/users";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -34,10 +39,20 @@ export default function SignUpPage() {
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = (data: SignUpFormValues) => {
-    const { confirmPassword, ...submissionData } = data;
-    console.log(submissionData);
-    // Handle sign-up logic here
+  const router = useRouter()
+
+  const registerMutation = useMutation({
+    mutationFn: registerAction
+  })
+  const { isPending, data: registerResult } = registerMutation
+  const onSubmit = async (data: SignUpFormValues) => {
+    const result = await registerMutation.mutateAsync(data)
+    if (result.errorMessage) {
+      toast.error(result.errorMessage)
+    } else {
+      toast.success('Sign up success!')
+      router.push('/login')
+    }
   };
 
   return (<AuthLayout>
@@ -78,8 +93,12 @@ export default function SignUpPage() {
         </div>
       </CardContent>
       <CardFooter className='flex flex-col items-start'>
+        {registerResult?.errorMessage && <p className="text-destructive text-sm">{registerResult?.errorMessage}</p>}
         <Button type="submit" className="w-full mt-3">
-          Sign Up
+          { isPending
+            ? <><Loader2 className="animate-spin" /> Logging in...</>
+            : 'Sign Up'
+          }
         </Button>
         <div className="w-full flex justify-end mt-2">
           <p>Already have an account? <Link href='/login' className='underline'>Login</Link> </p>

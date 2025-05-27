@@ -2390,10 +2390,12 @@ export namespace Prisma {
 
   export type BookmarkAvgAggregateOutputType = {
     displayOrder: number | null
+    readingProgress: number | null
   }
 
   export type BookmarkSumAggregateOutputType = {
     displayOrder: number | null
+    readingProgress: number | null
   }
 
   export type BookmarkMinAggregateOutputType = {
@@ -2407,6 +2409,7 @@ export namespace Prisma {
     ogImageUrl: string | null
     domainName: string | null
     displayOrder: number | null
+    readingProgress: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2422,6 +2425,7 @@ export namespace Prisma {
     ogImageUrl: string | null
     domainName: string | null
     displayOrder: number | null
+    readingProgress: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2437,6 +2441,7 @@ export namespace Prisma {
     ogImageUrl: number
     domainName: number
     displayOrder: number
+    readingProgress: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2445,10 +2450,12 @@ export namespace Prisma {
 
   export type BookmarkAvgAggregateInputType = {
     displayOrder?: true
+    readingProgress?: true
   }
 
   export type BookmarkSumAggregateInputType = {
     displayOrder?: true
+    readingProgress?: true
   }
 
   export type BookmarkMinAggregateInputType = {
@@ -2462,6 +2469,7 @@ export namespace Prisma {
     ogImageUrl?: true
     domainName?: true
     displayOrder?: true
+    readingProgress?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2477,6 +2485,7 @@ export namespace Prisma {
     ogImageUrl?: true
     domainName?: true
     displayOrder?: true
+    readingProgress?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2492,6 +2501,7 @@ export namespace Prisma {
     ogImageUrl?: true
     domainName?: true
     displayOrder?: true
+    readingProgress?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2594,6 +2604,7 @@ export namespace Prisma {
     ogImageUrl: string | null
     domainName: string | null
     displayOrder: number | null
+    readingProgress: number | null
     createdAt: Date
     updatedAt: Date
     _count: BookmarkCountAggregateOutputType | null
@@ -2628,6 +2639,7 @@ export namespace Prisma {
     ogImageUrl?: boolean
     domainName?: boolean
     displayOrder?: boolean
+    readingProgress?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2645,6 +2657,7 @@ export namespace Prisma {
     ogImageUrl?: boolean
     domainName?: boolean
     displayOrder?: boolean
+    readingProgress?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2662,6 +2675,7 @@ export namespace Prisma {
     ogImageUrl?: boolean
     domainName?: boolean
     displayOrder?: boolean
+    readingProgress?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2679,11 +2693,12 @@ export namespace Prisma {
     ogImageUrl?: boolean
     domainName?: boolean
     displayOrder?: boolean
+    readingProgress?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BookmarkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "categoryId" | "title" | "url" | "description" | "faviconUrl" | "ogImageUrl" | "domainName" | "displayOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["bookmark"]>
+  export type BookmarkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "categoryId" | "title" | "url" | "description" | "faviconUrl" | "ogImageUrl" | "domainName" | "displayOrder" | "readingProgress" | "createdAt" | "updatedAt", ExtArgs["result"]["bookmark"]>
   export type BookmarkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -2744,6 +2759,10 @@ export namespace Prisma {
        * Optional order for displaying bookmarks within a category.
        */
       displayOrder: number | null
+      /**
+       * Optional reading progress percentage (e.g. for articles, books).
+       */
+      readingProgress: number | null
       /**
        * Timestamp of when the bookmark was created.
        */
@@ -3187,6 +3206,7 @@ export namespace Prisma {
     readonly ogImageUrl: FieldRef<"Bookmark", 'String'>
     readonly domainName: FieldRef<"Bookmark", 'String'>
     readonly displayOrder: FieldRef<"Bookmark", 'Int'>
+    readonly readingProgress: FieldRef<"Bookmark", 'Int'>
     readonly createdAt: FieldRef<"Bookmark", 'DateTime'>
     readonly updatedAt: FieldRef<"Bookmark", 'DateTime'>
   }
@@ -4733,6 +4753,7 @@ export namespace Prisma {
     ogImageUrl: 'ogImageUrl',
     domainName: 'domainName',
     displayOrder: 'displayOrder',
+    readingProgress: 'readingProgress',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4940,6 +4961,7 @@ export namespace Prisma {
     ogImageUrl?: StringNullableFilter<"Bookmark"> | string | null
     domainName?: StringNullableFilter<"Bookmark"> | string | null
     displayOrder?: IntNullableFilter<"Bookmark"> | number | null
+    readingProgress?: IntNullableFilter<"Bookmark"> | number | null
     createdAt?: DateTimeFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeFilter<"Bookmark"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -4957,6 +4979,7 @@ export namespace Prisma {
     ogImageUrl?: SortOrderInput | SortOrder
     domainName?: SortOrderInput | SortOrder
     displayOrder?: SortOrderInput | SortOrder
+    readingProgress?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -4977,6 +5000,7 @@ export namespace Prisma {
     ogImageUrl?: StringNullableFilter<"Bookmark"> | string | null
     domainName?: StringNullableFilter<"Bookmark"> | string | null
     displayOrder?: IntNullableFilter<"Bookmark"> | number | null
+    readingProgress?: IntNullableFilter<"Bookmark"> | number | null
     createdAt?: DateTimeFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeFilter<"Bookmark"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -4994,6 +5018,7 @@ export namespace Prisma {
     ogImageUrl?: SortOrderInput | SortOrder
     domainName?: SortOrderInput | SortOrder
     displayOrder?: SortOrderInput | SortOrder
+    readingProgress?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BookmarkCountOrderByAggregateInput
@@ -5017,6 +5042,7 @@ export namespace Prisma {
     ogImageUrl?: StringNullableWithAggregatesFilter<"Bookmark"> | string | null
     domainName?: StringNullableWithAggregatesFilter<"Bookmark"> | string | null
     displayOrder?: IntNullableWithAggregatesFilter<"Bookmark"> | number | null
+    readingProgress?: IntNullableWithAggregatesFilter<"Bookmark"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Bookmark"> | Date | string
   }
@@ -5166,6 +5192,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookmarksInput
@@ -5183,6 +5210,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5196,6 +5224,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookmarksNestedInput
@@ -5213,6 +5242,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5228,6 +5258,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5241,6 +5272,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5256,6 +5288,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5540,12 +5573,14 @@ export namespace Prisma {
     ogImageUrl?: SortOrder
     domainName?: SortOrder
     displayOrder?: SortOrder
+    readingProgress?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type BookmarkAvgOrderByAggregateInput = {
     displayOrder?: SortOrder
+    readingProgress?: SortOrder
   }
 
   export type BookmarkMaxOrderByAggregateInput = {
@@ -5559,6 +5594,7 @@ export namespace Prisma {
     ogImageUrl?: SortOrder
     domainName?: SortOrder
     displayOrder?: SortOrder
+    readingProgress?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5574,12 +5610,14 @@ export namespace Prisma {
     ogImageUrl?: SortOrder
     domainName?: SortOrder
     displayOrder?: SortOrder
+    readingProgress?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type BookmarkSumOrderByAggregateInput = {
     displayOrder?: SortOrder
+    readingProgress?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -6095,6 +6133,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookmarksInput
@@ -6110,6 +6149,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6246,6 +6286,7 @@ export namespace Prisma {
     ogImageUrl?: StringNullableFilter<"Bookmark"> | string | null
     domainName?: StringNullableFilter<"Bookmark"> | string | null
     displayOrder?: IntNullableFilter<"Bookmark"> | number | null
+    readingProgress?: IntNullableFilter<"Bookmark"> | number | null
     createdAt?: DateTimeFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeFilter<"Bookmark"> | Date | string
   }
@@ -6405,6 +6446,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     category: CategoryCreateNestedOneWithoutBookmarksInput
@@ -6420,6 +6462,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6486,6 +6529,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6533,6 +6577,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookmarksNestedInput
@@ -6548,6 +6593,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6562,6 +6608,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6586,6 +6633,7 @@ export namespace Prisma {
     ogImageUrl?: string | null
     domainName?: string | null
     displayOrder?: number | null
+    readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6633,6 +6681,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryUpdateOneRequiredWithoutBookmarksNestedInput
@@ -6648,6 +6697,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6662,6 +6712,7 @@ export namespace Prisma {
     ogImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     domainName?: NullableStringFieldUpdateOperationsInput | string | null
     displayOrder?: NullableIntFieldUpdateOperationsInput | number | null
+    readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

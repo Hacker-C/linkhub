@@ -62,7 +62,7 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
           </DropdownMenuItem>
           <DropdownMenuItem>重命名</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive focus:text-destructive-foreground">删除</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
@@ -108,7 +108,7 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
               </DropdownMenuItem>
               <DropdownMenuItem>重命名</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">删除</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground">删除</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
