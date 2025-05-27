@@ -5,6 +5,7 @@ export interface Bookmark {
   description?: string;
   favicon?: string; // URL to favicon
   domain: string;
+  readingProgress?: number;
   categoryId: string;
 }
 
