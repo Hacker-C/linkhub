@@ -51,7 +51,7 @@ model Bookmark {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  /// Category this bookmark belongs to. Cascades on delete if category is deleted.
+  /// ICategory this bookmark belongs to. Cascades on delete if category is deleted.
   categoryId String   @map("category_id")
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'; // Add useState
 import Link from 'next/link';
 import Image from 'next/image'; // For favicons
-import { Bookmark } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
@@ -14,30 +13,23 @@ import {
 import { Card } from '@/components/ui/card'; // Using shadcn Card as base
 import { HorizontalProgressBar } from '@/components/ui/HorizontalProgressBar'; 
 import { CircularProgressBar } from '@/components/ui/CircularProgressBar';   
-import { EditBookmarkModal } from '@/components/bookmarks/EditBookmarkModal'; 
+import { EditBookmarkModal } from '@/components/bookmarks/EditBookmarkModal';
+import { Bookmark } from "@/actions/generated/client"; 
 
 interface BookmarkCardProps {
-  bookmark: Bookmark; // Renamed from initialBookmark for clarity in props definition
+  bookmark: Bookmark;
   isListView: boolean;
 }
 
-export function BookmarkCard({ bookmark: initialBookmark, isListView }: BookmarkCardProps) {
-  const [bookmark, setBookmark] = useState<Bookmark>(initialBookmark); 
+export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const bookmarkVisible = !!bookmark.readingProgress
 
-  const handleSaveBookmark = (updatedBookmark: Bookmark) => {
-    setBookmark(updatedBookmark); 
-    console.log("Bookmark updated (client-side):", updatedBookmark);
-    // In a real app, you'd call an API to save to backend here
-    setIsEditModalOpen(false);
-  };
-
   const FaviconDisplay = () => (
-    bookmark.favicon ? (
+    bookmark.faviconUrl ? (
       <Image
-        src={bookmark.favicon}
+        src={bookmark.faviconUrl}
         alt={`${bookmark.title} Favicon`}
         width={32}
         height={32}
@@ -61,7 +53,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
             <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="flex-grow min-w-0">
               <div className="card-title-section">
                 <h3 className="card-title truncate">{bookmark.title}</h3>
-                <p className="card-domain truncate">{bookmark.domain}</p>
+                <p className="card-domain truncate">{bookmark.domainName}</p>
               </div>
             </Link>
           </div>
@@ -91,7 +83,6 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
           isOpen={isEditModalOpen}
           onOpenChange={setIsEditModalOpen}
           bookmark={bookmark}
-          onSave={handleSaveBookmark}
         />
       </>
     );
@@ -146,7 +137,7 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
         </div>
         <Link href={bookmark.url} target="_blank" rel="noopener noreferrer" className="block px-5 pb-2 pt-2"> {/* Adjusted padding for domain */}
           <p className="card-domain text-xs text-primary truncate">
-            {bookmark.domain}
+            {bookmark.domainName}
           </p>
         </Link>
       </Card>
@@ -154,7 +145,6 @@ export function BookmarkCard({ bookmark: initialBookmark, isListView }: Bookmark
         isOpen={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         bookmark={bookmark}
-        onSave={handleSaveBookmark}
       />
     </>
   );

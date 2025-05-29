@@ -25,6 +25,11 @@ export async function middleware(request: NextRequest) {
     if (!isAuthenticated) {
       url.pathname = `/login`
       return NextResponse.redirect(url)
+    } else {
+      if (pathname === '/admin') {
+        url.pathname = `/admin/0`
+        return NextResponse.redirect(url)
+      }
     }
   } else if (pathname.startsWith('/login') || pathname.startsWith('/sign-up')) {
     if (isAuthenticated) {

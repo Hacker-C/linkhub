@@ -1,22 +1,44 @@
 "use client";
 import React from 'react';
-import { Bookmark } from '@/lib/types';
 import { BookmarkCard } from './BookmarkCard';
 import { cn } from '@/lib/utils';
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/actions/lib/queryKeys";
+import { Loader } from "lucide-react";
+import { queryBookmarks } from "@/actions/bookmarks";
 
 interface BookmarkListProps {
-  bookmarks: Bookmark[];
   layout: 'grid' | 'list';
 }
 
-export function BookmarkList({ bookmarks, layout }: BookmarkListProps) {
+export function BookmarkList({ layout }: BookmarkListProps) {
+
+  const params = useParams()
+  const categoryId = params.categoryid as string;
+
+  const { isLoading, data: queryResult } = useQuery({
+    queryKey: queryKeys.queryBookmarks(),
+    queryFn: () => queryBookmarks({ categoryId })
+  })
+
+  const bookmarks = queryResult?.data || []
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-10 text-muted-foreground">
+        <Loader className="animate-spin mx-auto" />
+      </div>
+    )
+  }
+
   if (!bookmarks || bookmarks.length === 0) {
     return (
       <div className="text-center py-10 text-muted-foreground">
-        <p>这里还没有任何收藏哦。</p>
-        <p>尝试添加一些您喜欢的网站吧！</p>
+        <p>You don&#39;t have any bookmarks yet.</p>
+        <p>Add some of your favorite sites to get started!</p>
       </div>
-    );
+    )
   }
 
   return (

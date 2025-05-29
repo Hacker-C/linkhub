@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from 'react';
-import { Category } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Folder, Globe, Lock, ChevronRight, MoreHorizontal, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,16 +11,16 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { TreeCategory } from "@/actions/categories";
 
 interface CategoryItemProps {
-  category: Category;
+  category: TreeCategory;
   isActive: boolean;
-  onSelectCategory: (categoryId: string) => void;
   onToggleVisibility: (categoryId: string, isPublic: boolean) => void;
   level?: number;
 }
 
-export function CategoryItem({ category, isActive, onSelectCategory, onToggleVisibility, level = 0 }: CategoryItemProps) {
+export function CategoryItem({ category, isActive, onToggleVisibility, level = 0 }: CategoryItemProps) {
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false); // For multi-level, default to true if active parent
   const hasSubCategories = category.subCategories && category.subCategories.length > 0;
 
@@ -34,7 +33,7 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
       }
     }
     if (!(e.target as HTMLElement).closest('.category-more-actions-btn')) {
-      onSelectCategory(category.id);
+      // todo onSelectCategory(category.id);
     }
   };
 
@@ -118,7 +117,6 @@ export function CategoryItem({ category, isActive, onSelectCategory, onToggleVis
               key={subCat.id}
               category={subCat}
               isActive={isActive && subCat.id === category.id} // This logic needs refinement for deep active state
-              onSelectCategory={onSelectCategory}
               onToggleVisibility={onToggleVisibility}
               level={level + 1}
             />

@@ -213,6 +213,15 @@
   }
 }
 
+@layer components {
+  .center-absolute {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+  .h-center-absolute {
+    @apply absolute left-1/2 -translate-x-1/2;
+  }
+}
+
 /* Custom styles from previous HTML for category items and layout list */
 .category-active {
   @apply bg-primary/10 text-primary font-semibold;

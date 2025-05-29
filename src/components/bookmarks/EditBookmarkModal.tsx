@@ -4,7 +4,6 @@ import * as React from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Bookmark } from "@/lib/types"; // Assuming readingProgress is now in this type
 
 import {
   Dialog,
@@ -18,15 +17,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea"; 
-import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import { Bookmark } from "@/actions/generated/client";
 
 // Define Zod schema for validation
 const editBookmarkSchema = z.object({
   title: z.string().min(1, "Title is required"),
   url: z.string().url("Invalid URL format"),
   description: z.string().optional(),
-  readingProgress: z.number().min(0).max(100).default(0),
+  readingProgress: z.number().min(0).max(100),
 });
 
 type EditBookmarkFormValues = z.infer<typeof editBookmarkSchema>;
@@ -35,20 +34,17 @@ interface EditBookmarkModalProps {
   bookmark: Bookmark | null; // Bookmark to edit, or null if dialog is for creating (though current plan is edit only)
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (updatedBookmark: Bookmark) => void; // Callback when save is successful
 }
 
 export function EditBookmarkModal({
   bookmark,
   isOpen,
   onOpenChange,
-  onSave,
 }: EditBookmarkModalProps) {
   const {
     register,
     handleSubmit,
     reset,
-    control, // For Slider if needed, or use setValue
     setValue,
     watch,
     formState: { errors, isSubmitting },
@@ -90,8 +86,8 @@ export function EditBookmarkModal({
     const updatedBookmarkData: Bookmark = {
       ...bookmark,
       ...data,
-    };
-    onSave(updatedBookmarkData);
+    }
+    console.log(updatedBookmarkData)
     onOpenChange(false); // Close dialog on save
   };
 

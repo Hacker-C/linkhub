@@ -51,24 +51,24 @@ model Bookmark {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  /// Category this bookmark belongs to. Cascades on delete if category is deleted.
+  /// ICategory this bookmark belongs to. Cascades on delete if category is deleted.
   categoryId String   @map("category_id")
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   /// Title of the bookmarked site.
-  title        String
+  title           String
   /// The actual URL of the bookmarked site.
-  url          String
+  url             String
   /// Optional description for the bookmark.
-  description  String?
+  description     String?
   /// Optional URL to the site's favicon.
-  faviconUrl   String? @map("favicon_url")
+  faviconUrl      String? @map("favicon_url")
   /// Optional URL to the site's OpenGraph image.
-  ogImageUrl   String? @map("og_image_url")
+  ogImageUrl      String? @map("og_image_url")
   /// Extracted domain name from the URL, for display or filtering.
-  domainName   String? @map("domain_name")
+  domainName      String? @map("domain_name")
   /// Optional order for displaying bookmarks within a category.
-  displayOrder Int?    @map("display_order")
+  displayOrder    Int?    @map("display_order")
   /// Optional reading progress percentage (e.g. for articles, books).
   readingProgress Int?    @default(0) @map("reading_progress")
 

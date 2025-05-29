@@ -2728,7 +2728,7 @@ export namespace Prisma {
        */
       userId: string
       /**
-       * Category this bookmark belongs to. Cascades on delete if category is deleted.
+       * ICategory this bookmark belongs to. Cascades on delete if category is deleted.
        */
       categoryId: string
       /**

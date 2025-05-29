@@ -1,4 +1,4 @@
-export interface Bookmark {
+export interface IBookmark {
   id: string;
   title: string;
   url: string;
@@ -9,11 +9,11 @@ export interface Bookmark {
   categoryId: string;
 }
 
-export interface Category {
+export interface ICategory {
   id: string;
   name: string;
   itemCount: number;
   isPublic: boolean;
   parentId?: string | null; // For sub-categories
-  subCategories?: Category[];
+  subCategories?: ICategory[];
 }
