@@ -55,17 +55,17 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
 
       let metadata: FetchedWebsiteMetadata
 
-      // 3. 处理响应
+      // 3. Handle response
       try {
-        // 1. 构建 API 请求 URL
+        // 1. Construct API request URL
         const apiUrl = `/api/fetch-meta?url=${encodeURIComponent(url)}`;
 
-        // 2. 发起 fetch 请求
+        // 2. Make fetch request
         const response = await fetch(apiUrl);
         if (!response.ok) {
-          // 如果 HTTP 状态码不是 2xx，则尝试解析错误信息
-          const errorData = await response.json().catch(() => ({ error: `请求失败，状态码: ${response.status}` }));
-          throw new Error(errorData.error || `请求失败，状态码: ${response.status}`);
+          // If the HTTP status code is not 2xx, try to parse the error message
+          const errorData = await response.json().catch(() => ({ error: `Request failed, status code: ${response.status}` }));
+          throw new Error(errorData.error || `Request failed, status code: ${response.status}`);
         }
         metadata = await response.json();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

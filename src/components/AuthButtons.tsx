@@ -12,10 +12,10 @@ export function AuthButtons({ onLoginClick, onRegisterClick, className }: AuthBu
   return (
     <div className={className}>
       <Button variant="ghost" onClick={onLoginClick} className="text-sm font-medium text-foreground hover:bg-accent">
-        登录
+        Login
       </Button>
       <Button onClick={onRegisterClick} className="text-sm font-medium">
-        注册
+        Sign Up
       </Button>
     </div>
   );
