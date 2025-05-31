@@ -66,7 +66,7 @@ export function Header({
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6 space-x-2">
                 {isLoggedIn ? (
-                  <UserNav onLogoutClick={onLogout} userName="测试用户" />
+                  <UserNav onLogoutClick={onLogout} userName="Test User" />
                 ) : (
                   <AuthButtons onLoginClick={onLogin} onRegisterClick={onRegister} className="space-x-2" />
                 )}
@@ -81,7 +81,7 @@ export function Header({
               <ModeToggle />
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="打开主菜单">
+                  <Button variant="ghost" size="icon" aria-label="Open main menu">
                     <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
@@ -92,7 +92,7 @@ export function Header({
                         <span className="text-xl font-bold text-primary">LinkHub</span>
                       </Link>
                       <SheetClose asChild>
-                        <Button variant="ghost" size="icon" aria-label="关闭菜单">
+                        <Button variant="ghost" size="icon" aria-label="Close menu">
                           <X className="h-5 w-5" />
                         </Button>
                       </SheetClose>
@@ -101,9 +101,9 @@ export function Header({
                     {isLoggedIn ? (
                       <div className="space-y-3 border-t border-border pt-4">
                         <div className="flex items-center px-1 mb-2">
-                          <UserNav onLogoutClick={() => { onLogout(); setIsMobileMenuOpen(false);}} userName="测试用户" />
+                          <UserNav onLogoutClick={() => { onLogout(); setIsMobileMenuOpen(false);}} userName="Test User" />
                           <div className="ml-3">
-                            <div className="text-base font-medium text-foreground">测试用户</div>
+                            <div className="text-base font-medium text-foreground">Test User</div>
                             <div className="text-sm font-medium text-muted-foreground">user@example.com</div>
                           </div>
                         </div>
@@ -119,13 +119,13 @@ export function Header({
                           <PlusCircle className="h-5 w-5 mr-3" />
                           Add Bookmark
                         </Button>
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => setIsMobileMenuOpen(false)}>我的账户</Button>
-                        <Button variant="ghost" className="w-full justify-start" onClick={() => { onLogout(); setIsMobileMenuOpen(false);}}>退出登录</Button>
+                        <Button variant="ghost" className="w-full justify-start" onClick={() => setIsMobileMenuOpen(false)}>My Account</Button>
+                        <Button variant="ghost" className="w-full justify-start" onClick={() => { onLogout(); setIsMobileMenuOpen(false);}}>Logout</Button>
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <Button variant="outline" className="w-full" onClick={() => { onLogin(); setIsMobileMenuOpen(false);}}>登录</Button>
-                        <Button className="w-full" onClick={() => { onRegister(); setIsMobileMenuOpen(false);}}>注册</Button>
+                        <Button variant="outline" className="w-full" onClick={() => { onLogin(); setIsMobileMenuOpen(false);}}>Login</Button>
+                        <Button className="w-full" onClick={() => { onRegister(); setIsMobileMenuOpen(false);}}>Sign Up</Button>
                       </div>
                     )}
 

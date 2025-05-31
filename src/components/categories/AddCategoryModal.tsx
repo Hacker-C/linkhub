@@ -27,7 +27,7 @@ interface AddCategoryModalProps {
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  isPublic: z.boolean(), // 是否公开，默认为 false
+  isPublic: z.boolean(), // Whether public, defaults to false
 });
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
@@ -140,7 +140,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
 
 export default AddCategoryModal;
 
-// 辅助组件，用于 FormDescription
+// Helper component for FormDescription
 function FormDescription({ children }: { children?: React.ReactNode }) {
   return <p className="text-sm text-muted-foreground">{children}</p>;
 }

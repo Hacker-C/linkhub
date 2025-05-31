@@ -54,7 +54,7 @@ export function Sidebar({
     <>
       <aside className="w-64 flex-col space-y-2 border-r border-border bg-card p-4 overflow-y-auto h-full">
         <div className="flex justify-between items-center px-2 mb-3">
-          <h2 className="text-xl font-semibold text-primary">目录</h2>
+          <h2 className="text-xl font-semibold text-primary">Categories</h2>
         </div>
         <ScrollArea className="flex-1 pr-3 h-[calc(100%-100px)]">
           <nav className="space-y-1">
@@ -84,7 +84,7 @@ export function Sidebar({
             onClick={handleAddCategoryClick} // Open modal
           >
             <Plus className="h-5 w-5 mr-2"/>
-            添加分类
+            Add Category
           </Button>
         )}
       </aside>

@@ -20,7 +20,7 @@ interface UserNavProps {
   avatarSrc?: string;
 }
 
-export function UserNav({ onLogoutClick, userName = "用户", userEmail = "user@example.com" }: UserNavProps) {
+export function UserNav({ onLogoutClick, userName = "User", userEmail = "user@example.com" }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,7 +43,7 @@ export function UserNav({ onLogoutClick, userName = "用户", userEmail = "user@
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogoutClick}>
-          退出登录
+          Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
