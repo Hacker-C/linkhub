@@ -13,7 +13,7 @@ import { getUser } from "@/actions/users";
  * @param description
  */
 const createBookmarkImpl = async (
-  { title, url, categoryId, description }: createBookmarkParams
+  { title, url, categoryId, description, faviconUrl, ogImageUrl, domainName }: createBookmarkParams
 ): Promise<ResponseWithError<Bookmark>> => {
   const res = await getUser()
   if (res?.errorMessage || !res?.data?.id) {
@@ -21,11 +21,14 @@ const createBookmarkImpl = async (
   }
   const result = await prisma.bookmark.create({
     data: {
+      url,
+      title,
+      description,
+      faviconUrl,
+      domainName,
+      ogImageUrl,
       userId: res.data.id!,
       categoryId,
-      title,
-      url,
-      description
     }
   })
   return { errorMessage: null, data: result }
@@ -56,11 +59,15 @@ const queryBookmarksImpl = async (
   if (res?.errorMessage || !res?.data?.id) {
     throw new Error(res.errorMessage || 'Unknown error')
   }
+  let whereCondition = {}
+  if (!!categoryId) {
+    whereCondition = { userId: res.data.id!, categoryId }
+  } else {
+    whereCondition = { userId: res.data.id! }
+  }
+  console.log('whereCondition=', whereCondition)
   const result = await prisma.bookmark.findMany({
-    where: {
-      id: res.data.id!,
-      categoryId: categoryId
-    }
+    where: whereCondition
   })
   return { errorMessage: null, data: result }
 }
@@ -73,4 +80,19 @@ export type queryBookmarksParams = Partial<Pick<Prisma.BookmarkUncheckedCreateIn
  */
 export async function queryBookmarks(params: queryBookmarksParams): Promise<ResponseWithError<Bookmark[]>> {
   return withErrorHandle(queryBookmarksImpl)(params)
+}
+
+const deleteBookmarkByIdImpl = async (id: string ): Promise<ResponseWithError<Bookmark>> => {
+  const result = await prisma.bookmark.delete({
+    where: { id }
+  })
+  return { errorMessage: null, data: result }
+}
+
+/**
+ * Delete Bookmark ById
+ * @param params
+ */
+export async function deleteBookmarkById(id: string): Promise<ResponseWithError<Bookmark>> {
+  return withErrorHandle(deleteBookmarkByIdImpl)(id)
 }

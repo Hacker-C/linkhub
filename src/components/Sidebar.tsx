@@ -47,7 +47,7 @@ export function Sidebar({
   const categories = !categoriesDB ? [] :  [...categoriesDB]
   const flag = categoriesDB?.some(category => category.id === '0')
   if (!flag) {
-    categories.unshift({ id: '0', name: 'All link', isPublic: false } as unknown as TreeCategory);
+    categories.unshift({ id: '0', name: 'All Links', isPublic: false } as unknown as TreeCategory);
   }
 
   return (

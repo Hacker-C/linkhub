@@ -2,32 +2,21 @@
 import React from 'react';
 import { BookmarkCard } from './BookmarkCard';
 import { cn } from '@/lib/utils';
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "@/actions/lib/queryKeys";
 import { Loader } from "lucide-react";
-import { queryBookmarks } from "@/actions/bookmarks";
+import { useBookmarkList } from "@/hooks/useBookmarkList";
 
 interface BookmarkListProps {
   layout: 'grid' | 'list';
 }
 
 export function BookmarkList({ layout }: BookmarkListProps) {
-
-  const params = useParams()
-  const categoryId = params.categoryid as string;
-
-  const { isLoading, data: queryResult } = useQuery({
-    queryKey: queryKeys.queryBookmarks(),
-    queryFn: () => queryBookmarks({ categoryId })
-  })
-
+  const { isLoading, queryResult } = useBookmarkList()
   const bookmarks = queryResult?.data || []
 
   if (isLoading) {
     return (
       <div className="text-center py-10 text-muted-foreground">
-        <Loader className="animate-spin mx-auto" />
+        <Loader className="animate-spin mx-auto"/>
       </div>
     )
   }
@@ -49,7 +38,7 @@ export function BookmarkList({ layout }: BookmarkListProps) {
       )}
     >
       {bookmarks.map(bookmark => (
-        <BookmarkCard key={bookmark.id} bookmark={bookmark} isListView={layout === 'list'} />
+        <BookmarkCard key={bookmark.id} bookmark={bookmark} isListView={layout === 'list'}/>
       ))}
     </div>
   );

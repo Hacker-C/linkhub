@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function handleError<D>(error: unknown): ResponseWithError<D> {
   if (error instanceof Error) {
-    return { errorMessage: error.message, data: null }
+    return { errorMessage: error.message || 'Unknown error', data: null }
   }
   return { errorMessage: 'Unknown error', data: null }
 }

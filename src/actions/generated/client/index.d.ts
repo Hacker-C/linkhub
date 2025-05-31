@@ -2596,7 +2596,7 @@ export namespace Prisma {
   export type BookmarkGroupByOutputType = {
     id: string
     userId: string
-    categoryId: string
+    categoryId: string | null
     title: string
     url: string
     description: string | null
@@ -2643,7 +2643,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["bookmark"]>
 
   export type BookmarkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2661,7 +2661,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["bookmark"]>
 
   export type BookmarkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2679,7 +2679,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["bookmark"]>
 
   export type BookmarkSelectScalar = {
@@ -2701,22 +2701,22 @@ export namespace Prisma {
   export type BookmarkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "categoryId" | "title" | "url" | "description" | "faviconUrl" | "ogImageUrl" | "domainName" | "displayOrder" | "readingProgress" | "createdAt" | "updatedAt", ExtArgs["result"]["bookmark"]>
   export type BookmarkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }
   export type BookmarkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }
   export type BookmarkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | CategoryDefaultArgs<ExtArgs>
+    category?: boolean | Bookmark$categoryArgs<ExtArgs>
   }
 
   export type $BookmarkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Bookmark"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      category: Prisma.$CategoryPayload<ExtArgs>
+      category: Prisma.$CategoryPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       /**
@@ -2728,9 +2728,9 @@ export namespace Prisma {
        */
       userId: string
       /**
-       * ICategory this bookmark belongs to. Cascades on delete if category is deleted.
+       * Category this bookmark belongs to. Cascades on delete if category is deleted.
        */
-      categoryId: string
+      categoryId: string | null
       /**
        * Title of the bookmarked site.
        */
@@ -3166,7 +3166,7 @@ export namespace Prisma {
   export interface Prisma__BookmarkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    category<T extends Bookmark$categoryArgs<ExtArgs> = {}>(args?: Subset<T, Bookmark$categoryArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3602,6 +3602,25 @@ export namespace Prisma {
      * Limit how many Bookmarks to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Bookmark.category
+   */
+  export type Bookmark$categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    where?: CategoryWhereInput
   }
 
   /**
@@ -4953,7 +4972,7 @@ export namespace Prisma {
     NOT?: BookmarkWhereInput | BookmarkWhereInput[]
     id?: StringFilter<"Bookmark"> | string
     userId?: StringFilter<"Bookmark"> | string
-    categoryId?: StringFilter<"Bookmark"> | string
+    categoryId?: StringNullableFilter<"Bookmark"> | string | null
     title?: StringFilter<"Bookmark"> | string
     url?: StringFilter<"Bookmark"> | string
     description?: StringNullableFilter<"Bookmark"> | string | null
@@ -4965,13 +4984,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeFilter<"Bookmark"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
   }
 
   export type BookmarkOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    categoryId?: SortOrder
+    categoryId?: SortOrderInput | SortOrder
     title?: SortOrder
     url?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -4992,7 +5011,7 @@ export namespace Prisma {
     OR?: BookmarkWhereInput[]
     NOT?: BookmarkWhereInput | BookmarkWhereInput[]
     userId?: StringFilter<"Bookmark"> | string
-    categoryId?: StringFilter<"Bookmark"> | string
+    categoryId?: StringNullableFilter<"Bookmark"> | string | null
     title?: StringFilter<"Bookmark"> | string
     url?: StringFilter<"Bookmark"> | string
     description?: StringNullableFilter<"Bookmark"> | string | null
@@ -5004,13 +5023,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Bookmark"> | Date | string
     updatedAt?: DateTimeFilter<"Bookmark"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
   }, "id">
 
   export type BookmarkOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    categoryId?: SortOrder
+    categoryId?: SortOrderInput | SortOrder
     title?: SortOrder
     url?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -5034,7 +5053,7 @@ export namespace Prisma {
     NOT?: BookmarkScalarWhereWithAggregatesInput | BookmarkScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Bookmark"> | string
     userId?: StringWithAggregatesFilter<"Bookmark"> | string
-    categoryId?: StringWithAggregatesFilter<"Bookmark"> | string
+    categoryId?: StringNullableWithAggregatesFilter<"Bookmark"> | string | null
     title?: StringWithAggregatesFilter<"Bookmark"> | string
     url?: StringWithAggregatesFilter<"Bookmark"> | string
     description?: StringNullableWithAggregatesFilter<"Bookmark"> | string | null
@@ -5196,13 +5215,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBookmarksInput
-    category: CategoryCreateNestedOneWithoutBookmarksInput
+    category?: CategoryCreateNestedOneWithoutBookmarksInput
   }
 
   export type BookmarkUncheckedCreateInput = {
     id?: string
     userId: string
-    categoryId: string
+    categoryId?: string | null
     title: string
     url: string
     description?: string | null
@@ -5228,13 +5247,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBookmarksNestedInput
-    category?: CategoryUpdateOneRequiredWithoutBookmarksNestedInput
+    category?: CategoryUpdateOneWithoutBookmarksNestedInput
   }
 
   export type BookmarkUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    categoryId?: StringFieldUpdateOperationsInput | string
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5250,7 +5269,7 @@ export namespace Prisma {
   export type BookmarkCreateManyInput = {
     id?: string
     userId: string
-    categoryId: string
+    categoryId?: string | null
     title: string
     url: string
     description?: string | null
@@ -5280,7 +5299,7 @@ export namespace Prisma {
   export type BookmarkUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    categoryId?: StringFieldUpdateOperationsInput | string
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5557,11 +5576,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type CategoryScalarRelationFilter = {
-    is?: CategoryWhereInput
-    isNot?: CategoryWhereInput
-  }
-
   export type BookmarkCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -5799,10 +5813,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutBookmarksInput, UserUpdateWithoutBookmarksInput>, UserUncheckedUpdateWithoutBookmarksInput>
   }
 
-  export type CategoryUpdateOneRequiredWithoutBookmarksNestedInput = {
+  export type CategoryUpdateOneWithoutBookmarksNestedInput = {
     create?: XOR<CategoryCreateWithoutBookmarksInput, CategoryUncheckedCreateWithoutBookmarksInput>
     connectOrCreate?: CategoryCreateOrConnectWithoutBookmarksInput
     upsert?: CategoryUpsertWithoutBookmarksInput
+    disconnect?: CategoryWhereInput | boolean
+    delete?: CategoryWhereInput | boolean
     connect?: CategoryWhereUniqueInput
     update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutBookmarksInput, CategoryUpdateWithoutBookmarksInput>, CategoryUncheckedUpdateWithoutBookmarksInput>
   }
@@ -6278,7 +6294,7 @@ export namespace Prisma {
     NOT?: BookmarkScalarWhereInput | BookmarkScalarWhereInput[]
     id?: StringFilter<"Bookmark"> | string
     userId?: StringFilter<"Bookmark"> | string
-    categoryId?: StringFilter<"Bookmark"> | string
+    categoryId?: StringNullableFilter<"Bookmark"> | string | null
     title?: StringFilter<"Bookmark"> | string
     url?: StringFilter<"Bookmark"> | string
     description?: StringNullableFilter<"Bookmark"> | string | null
@@ -6449,12 +6465,12 @@ export namespace Prisma {
     readingProgress?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    category: CategoryCreateNestedOneWithoutBookmarksInput
+    category?: CategoryCreateNestedOneWithoutBookmarksInput
   }
 
   export type BookmarkUncheckedCreateWithoutUserInput = {
     id?: string
-    categoryId: string
+    categoryId?: string | null
     title: string
     url: string
     description?: string | null
@@ -6625,7 +6641,7 @@ export namespace Prisma {
 
   export type BookmarkCreateManyUserInput = {
     id?: string
-    categoryId: string
+    categoryId?: string | null
     title: string
     url: string
     description?: string | null
@@ -6684,12 +6700,12 @@ export namespace Prisma {
     readingProgress?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    category?: CategoryUpdateOneRequiredWithoutBookmarksNestedInput
+    category?: CategoryUpdateOneWithoutBookmarksNestedInput
   }
 
   export type BookmarkUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    categoryId?: StringFieldUpdateOperationsInput | string
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6704,7 +6720,7 @@ export namespace Prisma {
 
   export type BookmarkUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    categoryId?: StringFieldUpdateOperationsInput | string
+    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null

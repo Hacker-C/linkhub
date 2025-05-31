@@ -79,15 +79,17 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
       const params = {
         url,
         title: title || domain,
-        description: description,
+        description: description || url,
         faviconUrl: iconLink,
         domainName: domain,
         ogImageUrl: ogImage,
       } as createBookmarkParams
 
+      console.log(params)
+
       const res = await createBookmarkAction({
         ...params,
-        categoryId
+        categoryId: categoryId === '0' ? null : categoryId
       })
       return res
     }
@@ -101,6 +103,7 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
       toast.error(res.errorMessage)
     } else {
       toast.success('Add link successfully!');
+      handleClose()
     }
   }
 
@@ -145,7 +148,7 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
               className="mt-1"
             >
               {isPending
-                ? <><Loader2 className="animate-spin"/> Logging in...</>
+                ? <><Loader2 className="animate-spin"/>Submitting query...</>
                 : 'Submit Query'}
             </Button>
           </form>

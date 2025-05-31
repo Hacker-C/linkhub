@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import { URL } from 'url';
 
-const FETCH_TIMEOUT_MS = 15000;
+const FETCH_TIMEOUT_MS = 5000;
 
 export interface FetchedWebsiteMetadata {
   title?: string;
