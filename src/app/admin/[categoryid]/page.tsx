@@ -9,19 +9,19 @@ import { SearchInput } from '@/components/SearchInput';
 import { Button } from '@/components/ui/button';
 import { Plus, RotateCcw } from 'lucide-react';
 import { MobileNavMenu } from '@/components/MobileNavMenu';
-import { useAuth } from "@/components/AuthContext";
 import AddBookmarkModal from "@/components/bookmarks/AddBookmarkModal";
 import { useBookmarkList } from "@/hooks/useBookmarkList";
+import { useCategory } from "@/hooks/useCategory";
+import { usePageParams } from "@/hooks/usePageParams";
+import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
 
 export default function AdminPage() {
-  const { isLoggedIn } = useAuth()
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const { refetch } = useBookmarkList()
 
-  const handleToggleCategoryVisibility = (categoryId: string, makePublic: boolean) => {
-    // todo
-    alert(`概念功能：分类 ${categoryId} 已被设为 ${makePublic ? '公开' : '私有'}`);
-  };
+  const categoryid = usePageParams('categoryid')
+  const { category } = useCategory(categoryid)
+  const categoryName = categoryid === CATEGORY_DEFAULT_ID ?  'All Links' : category?.name
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -31,27 +31,19 @@ export default function AdminPage() {
 
   return (
     <>
-      <Header
-        isLoggedIn={isLoggedIn}
-      />
+      <Header />
       <div className="flex h-[calc(100vh-4rem)]"> {/* Adjust height for sticky nav */}
         {/* Desktop Sidebar */}
         <div className="hidden md:flex">
-          <Sidebar
-            onToggleCategoryVisibility={handleToggleCategoryVisibility}
-            isLoggedIn={isLoggedIn}
-          />
+          <Sidebar />
         </div>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-slate-900/20">
           {/* Mobile Header (inside main for scrolling) */}
           <header className="md:hidden flex items-center justify-between mb-6">
-            <MobileNavMenu
-              onToggleCategoryVisibility={handleToggleCategoryVisibility}
-              isLoggedIn={isLoggedIn}
-            />
+            <MobileNavMenu />
             <h2 id="mobile-page-title" className="text-xl font-semibold text-primary">
-              {'当前目录名称'}
+              {categoryName}
             </h2>
             <div className="w-8"></div> {/* Spacer for centering title */}
           </header>
@@ -59,37 +51,32 @@ export default function AdminPage() {
           {/* Desktop Header for main content area */}
           <div className="hidden md:flex items-center justify-between mb-6">
             <h2 id="desktop-page-title" className="text-2xl font-semibold text-foreground">
-              {'当前目录名称'}
+              {categoryName}
             </h2>
             <div className="flex items-center space-x-4">
               <SearchInput />
-              <Button variant="ghost" className="rounded-full" onClick={() => refetch}>
+              <Button variant="ghost" className="rounded-full" onClick={() => refetch()}>
                 <RotateCcw />
               </Button>
               <LayoutSwitcher currentLayout={layout} onLayoutChange={setLayout} />
-              {isLoggedIn && (
-                <Button onClick={handleAddBookmark}>
-                  <Plus className="h-5 w-5 mr-2" />
-                  Add link
-                </Button>
-              )}
+              <Button onClick={handleAddBookmark}>
+                <Plus className="h-5 w-5 mr-2" />
+                Add link
+              </Button>
             </div>
           </div>
 
           <BookmarkList layout={layout} />
 
           {/* Mobile Add IBookmark FAB */}
-          {isLoggedIn && (
-            <Button
-              size="icon"
-              className="md:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
-              onClick={handleAddBookmark}
-              aria-label="Add link"
-            >
-              <Plus className="h-7 w-7" />
-            </Button>
-          )}
-
+          <Button
+            size="icon"
+            className="md:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
+            onClick={handleAddBookmark}
+            aria-label="Add link"
+          >
+            <Plus className="h-7 w-7" />
+          </Button>
           <AddBookmarkModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}

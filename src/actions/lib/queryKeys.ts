@@ -1,3 +1,5 @@
 export const queryKeys = {
-  queryBookmarks: () => ['queryBookmarks']
+  queryBookmarksByCategoryId: (categoryId: string) => ['queryBookmarksByCategoryId', categoryId],
+  queryCategories: () => ['queryCategories'],
+  queryCategoryId: (id: string) => ['queryCategoryId', id],
 }

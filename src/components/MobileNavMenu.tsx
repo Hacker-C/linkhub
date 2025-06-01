@@ -5,15 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar'; // Reuse the Sidebar component
 
-interface MobileNavMenuProps {
-  onToggleCategoryVisibility: (categoryId: string, isPublic: boolean) => void;
-  isLoggedIn: boolean;
-}
-
-export function MobileNavMenu({
-                                onToggleCategoryVisibility,
-                                isLoggedIn
-                              }: MobileNavMenuProps) {
+export function MobileNavMenu() {
   const [isOpen, setIsOpen] = React.useState(false);
 
   // const handleSelectCategory = (categoryId: string) => {
@@ -30,10 +22,7 @@ export function MobileNavMenu({
       </SheetTrigger>
       <SheetContent side="left" className="w-[250px] p-0">
         {/* Pass props to Sidebar for mobile */}
-        <Sidebar
-          onToggleCategoryVisibility={onToggleCategoryVisibility}
-          isLoggedIn={isLoggedIn}
-        />
+        <Sidebar />
       </SheetContent>
     </Sheet>
   );

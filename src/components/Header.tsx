@@ -14,11 +14,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import AddBookmarkModal from "@/components/bookmarks/AddBookmarkModal";
 
-export function Header({
-                         isLoggedIn,
-                       }: {
-  isLoggedIn: boolean;
-}) {
+export function Header() {
+  const { isLoggedIn } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddBookmarkModalOpen, setIsAddBookmarkModalOpen] = useState(false); // State for AddBookmarkModal
   const router = useRouter()

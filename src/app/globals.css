@@ -283,7 +283,7 @@
   @apply flex w-full rounded-lg shadow-sm overflow-hidden mb-0 bg-card;
 }
 #bookmark-list-container.layout-list .bookmark-item .card-link-wrapper {
-  @apply flex items-center w-full py-3 px-4;
+  @apply flex items-center w-full;
 }
 #bookmark-list-container.layout-list .bookmark-item .card-header {
   @apply flex-grow flex items-center p-0 justify-start;
@@ -313,3 +313,7 @@
 
 .visibility-icon { @apply ml-2 text-xs; }
 .category-more-actions-btn { @apply p-0.5 ml-auto; }
+
+.non-dismissable [data-radix-ui-overlay] {
+  pointer-events: none !important;
+}

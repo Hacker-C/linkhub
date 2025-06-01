@@ -76,3 +76,43 @@ const queryCategoriesImpl = async (id? : string): Promise<ResponseWithError<Tree
 export async function queryCategories(id?: string): Promise<ResponseWithError<TreeCategory[]>> {
   return withErrorHandle(queryCategoriesImpl)(id)
 }
+
+/**
+ * Query category
+ * @param params
+ */
+const queryCategoryImpl = async (id: string): Promise<ResponseWithError<TreeCategory>> => {
+  const result = await prisma.category.findUnique({
+    where: {
+      id
+    }
+  })
+  return { errorMessage: null, data: result as TreeCategory }
+}
+
+/**
+ * Query category
+ * @param params
+ */
+export async function queryCategory(id: string): Promise<ResponseWithError<TreeCategory>> {
+  return withErrorHandle(queryCategoryImpl)(id)
+}
+
+/**
+ * Delete category
+ * @param params
+ */
+const deleteCategoryByIdImpl = async (id: string): Promise<ResponseWithError<TreeCategory>> => {
+  const result = await prisma.category.delete({
+    where: { id }
+  })
+  return { errorMessage: null, data: result as TreeCategory }
+}
+
+/**
+ * Delete category
+ * @param id category id
+ */
+export async function deleteCategoryById(id: string): Promise<ResponseWithError<TreeCategory>> {
+  return withErrorHandle(deleteCategoryByIdImpl)(id)
+}

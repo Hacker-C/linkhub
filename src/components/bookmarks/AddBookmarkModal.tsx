@@ -18,8 +18,10 @@ import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { createBookmarkAction, createBookmarkParams } from "@/actions/bookmarks";
 import { FetchedWebsiteMetadata } from "@/app/api/fetch-meta/route";
-import { usePageParams } from "@/hooks/useCategoryId";
+import { usePageParams } from "@/hooks/usePageParams";
 import { toast } from "sonner";
+import { useBookmarkList } from "@/hooks/useBookmarkList";
+import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
 
 interface AddBookmarkModalProps {
   isOpen: boolean;
@@ -36,6 +38,7 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
                                                            }) => {
 
   const categoryId = usePageParams('categoryid')
+  const { invalidateBookmarkList } = useBookmarkList()
 
   useEffect(() => {
     if (isOpen) {
@@ -89,7 +92,7 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
 
       const res = await createBookmarkAction({
         ...params,
-        categoryId: categoryId === '0' ? null : categoryId
+        categoryId: categoryId === CATEGORY_DEFAULT_ID ? null : categoryId
       })
       return res
     }
@@ -102,6 +105,7 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
     if (res.errorMessage) {
       toast.error(res.errorMessage)
     } else {
+      invalidateBookmarkList()
       toast.success('Add link successfully!');
       handleClose()
     }
