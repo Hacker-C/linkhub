@@ -220,6 +220,9 @@
   .h-center-absolute {
     @apply absolute left-1/2 -translate-x-1/2;
   }
+  .sidebar-hidden {
+    @apply hidden md:block;
+  }
 }
 
 /* Custom styles from previous HTML for category items and layout list */

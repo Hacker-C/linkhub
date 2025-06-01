@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/AuthContext";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { REACT_QUERY_STALE_TIME } from "@/lib/constants";
+import { SidebarContextProvider } from "@/components/Sidebar";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({
@@ -25,7 +26,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
       >
         <AuthProvider>
-          {children}
+          <SidebarContextProvider>
+            {children}
+          </SidebarContextProvider>
         </AuthProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} />

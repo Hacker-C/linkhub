@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Header } from '@/components/Header';
-import { Sidebar }  from '@/components/Sidebar';
+import { Sidebar, useSidebar } from '@/components/Sidebar';
 import { BookmarkList } from '@/components/BookmarkList';
 import { LayoutSwitcher } from '@/components/LayoutSwitcher';
 import { SearchInput } from '@/components/SearchInput';
@@ -14,6 +14,7 @@ import { useBookmarkList } from "@/hooks/useBookmarkList";
 import { useCategory } from "@/hooks/useCategory";
 import { usePageParams } from "@/hooks/usePageParams";
 import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export default function AdminPage() {
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
@@ -29,12 +30,14 @@ export default function AdminPage() {
     setIsOpen(true)
   }
 
+  const { open } = useSidebar()
+
   return (
     <>
       <Header />
       <div className="flex h-[calc(100vh-4rem)]"> {/* Adjust height for sticky nav */}
         {/* Desktop Sidebar */}
-        <div className="hidden md:flex">
+        <div className={cn('sidebar-hidden transition-all duration-300', open ? '' : '-ml-64')}>
           <Sidebar />
         </div>
 
