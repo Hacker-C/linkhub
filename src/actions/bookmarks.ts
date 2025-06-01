@@ -96,3 +96,24 @@ const deleteBookmarkByIdImpl = async (id: string ): Promise<ResponseWithError<Bo
 export async function deleteBookmarkById(id: string): Promise<ResponseWithError<Bookmark>> {
   return withErrorHandle(deleteBookmarkByIdImpl)(id)
 }
+
+export type UpdateBookmarkParams = {
+  id: string,
+  data: Prisma.BookmarkUpdateInput
+}
+
+const updateBookmarkImpl = async ({id, data} : UpdateBookmarkParams): Promise<ResponseWithError<Bookmark>> => {
+  const result = await prisma.bookmark.update({
+    where: { id },
+    data
+  })
+  return { errorMessage: null, data: result }
+}
+
+/**
+ * Update Bookmark ById
+ * @param params
+ */
+export async function updateBookmark(params: UpdateBookmarkParams): Promise<ResponseWithError<Bookmark>> {
+  return withErrorHandle(updateBookmarkImpl)(params)
+}

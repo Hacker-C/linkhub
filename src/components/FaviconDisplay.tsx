@@ -52,7 +52,7 @@ const FaviconDisplay: React.FC<FaviconDisplayProps> = ({ bookmark, isListView, b
     );
   } else {
     return (
-      <div className={cn("card-favicon-placeholder rounded-md bg-muted flex items-center justify-center text-primary font-semibold", isListView ? "w-6 h-6 text-xs" : "w-8 h-8 text-sm")}>
+      <div className={cn("card-favicon-placeholder rounded-md bg-muted flex items-center justify-center text-primary font-semibold", isListView ? "w-6 h-6 text-xs" : "w-8 h-8 px-3 text-sm")}>
         {bookmark.title.charAt(0).toUpperCase()}
       </div>
     );

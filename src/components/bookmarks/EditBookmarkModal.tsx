@@ -10,23 +10,26 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription, // Optional: if you want a subtitle
-  DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Bookmark } from "@/actions/generated/client";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateBookmark } from "@/actions/bookmarks";
+import { toast } from "sonner";
+import { CATEGORY_DEFAULT_ID, MESSAGES } from "@/lib/constants";
+import { updateBookmarkCacheData } from "@/actions/states/bookmarkState";
 
-// Define Zod schema for validation
 const editBookmarkSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  url: z.string().url("Invalid URL format"),
-  description: z.string().optional(),
-  readingProgress: z.number().min(0).max(100),
-});
+  title: z.string(),
+  url: z.string().url({ message: "Please enter a valid URL (e.g., http://example.com)." }),
+  description: z.string(),
+  readingProgress: z.number().min(0).max(100)
+})
 
 type EditBookmarkFormValues = z.infer<typeof editBookmarkSchema>;
 
@@ -37,29 +40,25 @@ interface EditBookmarkModalProps {
 }
 
 export function EditBookmarkModal({
-  bookmark,
-  isOpen,
-  onOpenChange,
-}: EditBookmarkModalProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<EditBookmarkFormValues>({
+                                    bookmark,
+                                    isOpen,
+                                    onOpenChange,
+                                  }: EditBookmarkModalProps) {
+  const form = useForm<EditBookmarkFormValues>({
     resolver: zodResolver(editBookmarkSchema),
     defaultValues: {
-      title: bookmark?.title || "",
-      url: bookmark?.url || "",
-      description: bookmark?.description || "",
-      readingProgress: bookmark?.readingProgress || 0,
-    },
-  });
+      title: '',
+      url: '',
+      description: '',
+      readingProgress: 0
+    }
+  })
+  const { reset, watch, setValue } = form
 
-  // Watch readingProgress for live update of slider label if desired
-  const currentProgress = watch("readingProgress", bookmark?.readingProgress || 0);
+  const currentProgress = +watch("readingProgress", +(bookmark?.readingProgress || 0));
+
+  console.log('currentProgress');
+  console.log( currentProgress);
 
   React.useEffect(() => {
     if (bookmark) {
@@ -67,10 +66,9 @@ export function EditBookmarkModal({
         title: bookmark.title,
         url: bookmark.url,
         description: bookmark.description || "",
-        readingProgress: bookmark.readingProgress || 0,
+        readingProgress: +(bookmark.readingProgress || 0),
       });
     } else {
-      // Reset to default if no bookmark is passed (e.g. for a create mode)
       reset({
         title: "",
         url: "",
@@ -78,17 +76,26 @@ export function EditBookmarkModal({
         readingProgress: 0,
       });
     }
-  }, [bookmark, reset, isOpen]); // Reset form when bookmark changes or dialog opens
+  }, [bookmark, reset , isOpen]);
+
+  const queryClient = useQueryClient()
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: updateBookmark,
+    onSuccess: async (note) => {
+      await updateBookmarkCacheData(bookmark?.categoryId ?? CATEGORY_DEFAULT_ID, note, 'update', queryClient)
+    }
+  })
 
   const onSubmit = async (data: EditBookmarkFormValues) => {
-    if (!bookmark) return; // Should not happen if used for editing only
+    if (!bookmark) return
 
-    const updatedBookmarkData: Bookmark = {
-      ...bookmark,
-      ...data,
+    const res = await mutateAsync({id: bookmark.id, data })
+    if (res.errorMessage) {
+      toast.error(res.errorMessage)
+    } else {
+      toast.error(MESSAGES.UPDATE_OPERATION_SUCCESS);
+      onOpenChange(false)
     }
-    console.log(updatedBookmarkData)
-    onOpenChange(false); // Close dialog on save
   };
 
   if (!isOpen || !bookmark) {
@@ -104,50 +111,86 @@ export function EditBookmarkModal({
             Update the details for your bookmark.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 py-4"> {/* Changed space-y-6 to space-y-5 for slightly tighter packing */}
-          <div className="space-y-1.5"> {/* Group label and input, ensure space for error message */}
-            <label htmlFor="title" className="block text-sm font-medium text-foreground">Title</label>
-            <Input id="title" {...register("title")} placeholder="Enter bookmark title" />
-            {errors.title ? <p className="text-sm text-red-500 pt-0.5">{errors.title.message}</p> : <div className="h-[calc(1.25rem+0.125rem)]"></div>} {/* Adjusted error placeholder height */}
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="url" className="block text-sm font-medium text-foreground">URL</label>
-            <Input id="url" {...register("url")} placeholder="https://example.com" />
-            {errors.url ? <p className="text-sm text-red-500 pt-0.5">{errors.url.message}</p> : <div className="h-[calc(1.25rem+0.125rem)]"></div>}
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="description" className="block text-sm font-medium text-foreground">Description (Optional)</label>
-            <Textarea id="description" {...register("description")} placeholder="A brief description" />
-            {errors.description ? <p className="text-sm text-red-500 pt-0.5">{errors.description.message}</p> : <div className="h-[calc(1.25rem+0.125rem)]"></div>}
-          </div>
-          
-          <div className="space-y-2.5"> {/* Increased space for slider label and slider itself */}
-            <label htmlFor="readingProgress" className="block text-sm font-medium text-foreground">
-              Reading Progress: <span className="font-semibold">{currentProgress}%</span>
-            </label>
-            <Slider
-              id="readingProgress"
-              min={0}
-              max={100}
-              step={1}
-              value={[currentProgress]} // Slider expects an array
-              onValueChange={(value) => setValue("readingProgress", value[0], { shouldValidate: true })}
-              // className="my-2" // Removed my-2, space managed by parent
+        <Form {...form}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            form.setValue('readingProgress', +form.getValues('readingProgress'))
+            form.handleSubmit(onSubmit)();
+          }} className="space-y-8 w-80">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="title"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
             />
-            {errors.readingProgress ? <p className="text-sm text-red-500 pt-0.5">{errors.readingProgress.message}</p> : <div className="h-[calc(1.25rem+0.125rem)]"></div>}
-          </div>
-
-          <DialogFooter className="pt-5"> {/* Increased top padding for footer */}
-            <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save Changes"}
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Url</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter a valid URL: https://..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="readingProgress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reading Progress</FormLabel>
+                  <FormControl>
+                    <Slider
+                      id="readingProgress"
+                      {...field}
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={[currentProgress]}
+                      onValueChange={(value) => setValue("readingProgress", +value[0], { shouldValidate: false })}
+                    />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Saving..." : "Save Changes"}
             </Button>
-          </DialogFooter>
-        </form>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
