@@ -13,18 +13,24 @@ interface ConfirmOperationAlertDialogProps {
   onClose: () => void
   onOpen: (v: boolean) => void
   onOk: () => void
+  okText?: string
+  confirmTitle?: string
+  description?: string
+  children?: React.ReactNode
 }
 
 export default function ConfirmOperationAlertDialog({
   open,
   onOpen,
   onClose,
-  onOk
+  onOk,
+  okText = 'Ok',
+  confirmTitle = 'Are you absolutely sure ?',
+  description = ' This action cannot be undone. This will permanently remove your data from our servers.',
+  children
 } : ConfirmOperationAlertDialogProps) {
 
   const handleOpenChange = (isOpen: boolean) => {
-    console.log('handleOpenChange#isOpen=', isOpen);
-    console.log('handleOpenChange#open=', open);
     if (!open) {
       // 仅当用户显式关闭（如点击取消按钮）时才关闭
       // 忽略外部点击（open === false 且无显式操作）
@@ -41,12 +47,10 @@ export default function ConfirmOperationAlertDialog({
       e.stopPropagation()
     }}>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-        <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete your account
-          and remove your data from our servers.
-        </AlertDialogDescription>
+        <AlertDialogTitle>{confirmTitle}</AlertDialogTitle>
+        <AlertDialogDescription>{description}</AlertDialogDescription>
       </AlertDialogHeader>
+      { children }
       <AlertDialogFooter>
         <AlertDialogCancel onClick={(e) => {
           e.stopPropagation()
@@ -55,7 +59,7 @@ export default function ConfirmOperationAlertDialog({
         <AlertDialogAction onClick={(e) => {
           e.stopPropagation()
           onOk()
-        }}>Ok</AlertDialogAction>
+        }}>{okText}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>)

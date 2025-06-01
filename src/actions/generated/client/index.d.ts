@@ -3655,6 +3655,7 @@ export namespace Prisma {
   export type UserMinAggregateOutputType = {
     id: string | null
     email: string | null
+    username: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3662,6 +3663,7 @@ export namespace Prisma {
   export type UserMaxAggregateOutputType = {
     id: string | null
     email: string | null
+    username: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3669,6 +3671,7 @@ export namespace Prisma {
   export type UserCountAggregateOutputType = {
     id: number
     email: number
+    username: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3678,6 +3681,7 @@ export namespace Prisma {
   export type UserMinAggregateInputType = {
     id?: true
     email?: true
+    username?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3685,6 +3689,7 @@ export namespace Prisma {
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
+    username?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3692,6 +3697,7 @@ export namespace Prisma {
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
+    username?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3772,6 +3778,7 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: string
     email: string
+    username: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -3796,6 +3803,7 @@ export namespace Prisma {
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    username?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     categories?: boolean | User$categoriesArgs<ExtArgs>
@@ -3806,6 +3814,7 @@ export namespace Prisma {
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    username?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -3813,6 +3822,7 @@ export namespace Prisma {
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
+    username?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -3820,11 +3830,12 @@ export namespace Prisma {
   export type UserSelectScalar = {
     id?: boolean
     email?: boolean
+    username?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     categories?: boolean | User$categoriesArgs<ExtArgs>
     bookmarks?: boolean | User$bookmarksArgs<ExtArgs>
@@ -3848,6 +3859,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string
+      username: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -4277,6 +4289,7 @@ export namespace Prisma {
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
+    readonly username: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -4783,6 +4796,7 @@ export namespace Prisma {
   export const UserScalarFieldEnum: {
     id: 'id',
     email: 'email',
+    username: 'username',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -5072,6 +5086,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
+    username?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     categories?: CategoryListRelationFilter
@@ -5081,6 +5096,7 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrder
+    username?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     categories?: CategoryOrderByRelationAggregateInput
@@ -5093,6 +5109,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
+    username?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     categories?: CategoryListRelationFilter
@@ -5102,6 +5119,7 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
+    username?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -5115,6 +5133,7 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
+    username?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -5315,6 +5334,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: CategoryCreateNestedManyWithoutUserInput
@@ -5324,6 +5344,7 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
@@ -5333,6 +5354,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: CategoryUpdateManyWithoutUserNestedInput
@@ -5342,6 +5364,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
@@ -5351,6 +5374,7 @@ export namespace Prisma {
   export type UserCreateManyInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5358,6 +5382,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5365,6 +5390,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5637,6 +5663,7 @@ export namespace Prisma {
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    username?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5644,6 +5671,7 @@ export namespace Prisma {
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    username?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5651,6 +5679,7 @@ export namespace Prisma {
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    username?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -6059,6 +6088,7 @@ export namespace Prisma {
   export type UserCreateWithoutCategoriesInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bookmarks?: BookmarkCreateNestedManyWithoutUserInput
@@ -6067,6 +6097,7 @@ export namespace Prisma {
   export type UserUncheckedCreateWithoutCategoriesInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bookmarks?: BookmarkUncheckedCreateNestedManyWithoutUserInput
@@ -6194,6 +6225,7 @@ export namespace Prisma {
   export type UserUpdateWithoutCategoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookmarks?: BookmarkUpdateManyWithoutUserNestedInput
@@ -6202,6 +6234,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateWithoutCategoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookmarks?: BookmarkUncheckedUpdateManyWithoutUserNestedInput
@@ -6310,6 +6343,7 @@ export namespace Prisma {
   export type UserCreateWithoutBookmarksInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: CategoryCreateNestedManyWithoutUserInput
@@ -6318,6 +6352,7 @@ export namespace Prisma {
   export type UserUncheckedCreateWithoutBookmarksInput = {
     id?: string
     email: string
+    username?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
@@ -6371,6 +6406,7 @@ export namespace Prisma {
   export type UserUpdateWithoutBookmarksInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: CategoryUpdateManyWithoutUserNestedInput
@@ -6379,6 +6415,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateWithoutBookmarksInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput

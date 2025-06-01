@@ -150,6 +150,7 @@ exports.Prisma.BookmarkScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  username: 'username',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

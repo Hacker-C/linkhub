@@ -1,7 +1,14 @@
 "use client";
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Folder, Globe, Lock, ChevronRight, MoreHorizontal, LayoutDashboard } from 'lucide-react';
+import {
+  Folder,
+  Globe,
+  Lock,
+  ChevronRight,
+  MoreHorizontal,
+  LayoutDashboard,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,6 +24,7 @@ import ConfirmOperationAlertDialog from "@/components/ConfirmOperationAlertDialo
 import { toast } from "sonner";
 import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
 import { useCategories } from "@/hooks/useCategories";
+import { ShareCategories } from "@/components/ShareCategories";
 
 interface CategoryItemProps {
   category: TreeCategory;
@@ -41,6 +49,8 @@ export function CategoryItem({ category, isActive, level = 0 }: CategoryItemProp
       // todo onSelectCategory(category.id);
     }
   };
+
+
 
   // Control Delete operation
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -68,10 +78,11 @@ export function CategoryItem({ category, isActive, level = 0 }: CategoryItemProp
           <div className="flex items-center space-x-2 flex-grow">
             <CollapsibleTrigger asChild className="collapsible-trigger-button -ml-1 mr-1">
               <Button variant="ghost" size="icon" className={cn("h-6 w-6 p-0", isActive && "text-primary")}>
-                <ChevronRight className={cn("h-4 w-4 chevron-icon", isSubMenuOpen && "rotate-90")} />
+                <ChevronRight className={cn("h-4 w-4 chevron-icon", isSubMenuOpen && "rotate-90")}/>
               </Button>
             </CollapsibleTrigger>
-            {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5" /> : <Folder className="h-5 w-5" />)}
+            {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5"/> :
+              <Folder className="h-5 w-5"/>)}
             <span className="truncate">{category.name}</span>
             <span className="visibility-icon" title={category.isPublic ? "公开" : "私有"}>
               {category.isPublic ? <Globe className="h-3 w-3"/> : <Lock className="h-3 w-3"/>}
@@ -82,17 +93,23 @@ export function CategoryItem({ category, isActive, level = 0 }: CategoryItemProp
           </span>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="category-more-actions-btn h-6 w-6 opacity-0 group-hover:opacity-100 focus:opacity-100" onClick={(e) => e.stopPropagation()}>
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="icon"
+                      className="category-more-actions-btn h-6 w-6 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      onClick={(e) => e.stopPropagation()}>
+                <MoreHorizontal className="h-4 w-4"/>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onChange={(e) => e.stopPropagation()}>
+              <DropdownMenuItem>Rename</DropdownMenuItem>
+              {category.isPublic && <DropdownMenuItem>
+                  <ShareCategories category={category} variant='text'/>
+              </DropdownMenuItem>}
               <DropdownMenuItem>
                 {category.isPublic ? "Set as private" : "Set as public"}
               </DropdownMenuItem>
-              <DropdownMenuItem>Rename</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground" onClick={onDeleteMenuItemClick}>Delete</DropdownMenuItem>
+              <DropdownMenuSeparator/>
+              <DropdownMenuItem className="text-destructive focus:text-destructive-foreground"
+                                onClick={onDeleteMenuItemClick}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -122,7 +139,8 @@ export function CategoryItem({ category, isActive, level = 0 }: CategoryItemProp
     >
       <div className="flex items-center space-x-2 flex-grow">
 
-        {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5" /> : <Folder className="h-5 w-5" />)}
+        {level === 0 && (category.id === 'all' ? <LayoutDashboard className="h-5 w-5"/> :
+          <Folder className="h-5 w-5"/>)}
         <Tooltip>
           <TooltipTrigger>
               <span className={cn("truncate inline-block text-left w-32", level > 0 && "text-sm")}>
@@ -147,18 +165,25 @@ export function CategoryItem({ category, isActive, level = 0 }: CategoryItemProp
                   className="category-more-actions-btn h-6 w-6 opacity-0 group-hover:opacity-100 focus:opacity-100 ml-1"
                   onClick={(e) => e.stopPropagation()}
           >
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="h-4 w-4"/>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+          <DropdownMenuItem>Rename</DropdownMenuItem>
+          {category.isPublic && <DropdownMenuItem>
+              <ShareCategories category={category} variant='text' />
+          </DropdownMenuItem>}
           <DropdownMenuItem>
             {category.isPublic ? "Set as private" : "Set as public"}
           </DropdownMenuItem>
-          <DropdownMenuItem>Rename</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive focus:text-destructive-foreground" onClick={onDeleteMenuItemClick}>Delete</DropdownMenuItem>
+          <DropdownMenuSeparator/>
+          <DropdownMenuItem className="text-destructive focus:text-destructive-foreground"
+                            onClick={onDeleteMenuItemClick}>Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      {/*share operate*/}
+
+      {/*delete operate*/}
       <ConfirmOperationAlertDialog
         open={deleteDialogOpen}
         onOpen={setDeleteDialogOpen}

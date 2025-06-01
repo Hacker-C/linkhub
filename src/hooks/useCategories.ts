@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/actions/lib/queryKeys";
-import { queryCategories } from "@/actions/categories";
+import { queryCategories, TreeCategory } from "@/actions/categories";
 import { toast } from "sonner";
 
 /**
@@ -30,5 +30,19 @@ export const useCategories = () => {
     categories,
     isLoading,
     invalidateCategories
+  }
+}
+
+export const useCategoryFromCacheData = (categoryId: string) => {
+  const queryClient = useQueryClient()
+  const categories = queryClient.getQueryData(queryKeys.queryCategories()) as TreeCategory[]
+  if (!categories) {
+    return { category: undefined }
+  }
+  console.log('categories')
+  console.log(categories)
+  const category = categories?.find(category => category.id === categoryId) || undefined
+  return {
+    category: category
   }
 }

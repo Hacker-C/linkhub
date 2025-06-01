@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Header } from '@/components/Header';
 import { Sidebar, useSidebar } from '@/components/Sidebar';
 import { BookmarkList } from '@/components/BookmarkList';
@@ -11,17 +11,19 @@ import { Plus, RotateCcw } from 'lucide-react';
 import { MobileNavMenu } from '@/components/MobileNavMenu';
 import AddBookmarkModal from "@/components/bookmarks/AddBookmarkModal";
 import { useBookmarkList } from "@/hooks/useBookmarkList";
-import { useCategory } from "@/hooks/useCategory";
 import { usePageParams } from "@/hooks/usePageParams";
 import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { ShareCategories } from "@/components/ShareCategories";
+import { useCategoryFromCacheData } from "@/hooks/useCategories";
+import useSafeLocalStorage from "@/hooks/useSafeLocalStorage";
 
 export default function AdminPage() {
-  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [layout, setLayout] = useSafeLocalStorage<'grid' | 'list'>('bookmark-list-layout', 'grid')
   const { refetch } = useBookmarkList()
 
   const categoryid = usePageParams('categoryid')
-  const { category } = useCategory(categoryid)
+  const { category } = useCategoryFromCacheData(categoryid)
   const categoryName = categoryid === CATEGORY_DEFAULT_ID ?  'All Links' : category?.name
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -61,7 +63,8 @@ export default function AdminPage() {
               <Button variant="ghost" className="rounded-full" onClick={() => refetch()}>
                 <RotateCcw />
               </Button>
-              <LayoutSwitcher currentLayout={layout} onLayoutChange={setLayout} />
+              <ShareCategories category={category} variant='icon' />
+              <LayoutSwitcher currentLayout={layout!} onLayoutChange={setLayout} />
               <Button onClick={handleAddBookmark}>
                 <Plus className="h-5 w-5 mr-2" />
                 Add link
@@ -69,7 +72,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <BookmarkList layout={layout} />
+          <BookmarkList layout={layout!} />
 
           {/* Mobile Add IBookmark FAB */}
           <Button

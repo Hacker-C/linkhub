@@ -27,6 +27,11 @@ import { updateBookmarkCacheData } from "@/actions/states/bookmarkState";
 const editBookmarkSchema = z.object({
   title: z.string(),
   url: z.string().url({ message: "Please enter a valid URL (e.g., http://example.com)." }),
+  ogImageUrl: z
+    .string()
+    .url({ message: 'Please enter a valid URL (e.g., http://example.com).' })
+    .optional()
+    .or(z.literal('')),
   description: z.string(),
   readingProgress: z.number().min(0).max(100)
 })
@@ -49,6 +54,7 @@ export function EditBookmarkModal({
     defaultValues: {
       title: '',
       url: '',
+      ogImageUrl: '',
       description: '',
       readingProgress: 0
     }
@@ -57,9 +63,6 @@ export function EditBookmarkModal({
 
   const currentProgress = +watch("readingProgress", +(bookmark?.readingProgress || 0));
 
-  console.log('currentProgress');
-  console.log( currentProgress);
-
   React.useEffect(() => {
     if (bookmark) {
       reset({
@@ -67,6 +70,7 @@ export function EditBookmarkModal({
         url: bookmark.url,
         description: bookmark.description || "",
         readingProgress: +(bookmark.readingProgress || 0),
+        ogImageUrl: bookmark?.ogImageUrl || ''
       });
     } else {
       reset({
@@ -116,7 +120,7 @@ export function EditBookmarkModal({
             e.preventDefault();
             form.setValue('readingProgress', +form.getValues('readingProgress'))
             form.handleSubmit(onSubmit)();
-          }} className="space-y-8 w-80">
+          }} className="space-y-8">
             <FormField
               control={form.control}
               name="title"
@@ -139,6 +143,22 @@ export function EditBookmarkModal({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Url</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter a valid URL: https://..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ogImageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>OG Image Url</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter a valid URL: https://..."
@@ -185,10 +205,12 @@ export function EditBookmarkModal({
                 </FormItem>
               )}
             />
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save Changes"}
-            </Button>
+            <div className='flex justify-end'>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+              <Button type="submit" disabled={isPending} className='ml-2'>
+                {isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
