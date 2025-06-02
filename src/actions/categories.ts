@@ -53,9 +53,9 @@ const queryCategoriesImpl = async (id? : string): Promise<ResponseWithError<Tree
   }
   const userId = res.data.id!; // 确保 userId 存在
 
-  const whereClause: any = {
+  const whereClause = {
     userId: userId, // 直接使用 userId 字段
-  };
+  } as { id: string, userId: string }
 
   if (id) {
     whereClause.id = id;

@@ -40,18 +40,18 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
   const categoryId = usePageParams('categoryid')
   const { invalidateBookmarkList } = useBookmarkList()
 
-  useEffect(() => {
-    if (isOpen) {
-      form.reset()
-    }
-  }, [isOpen]);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: '',
     }
   })
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset()
+    }
+  }, [isOpen, form]);
 
   const mutation = useMutation({
     mutationFn: async (url: string) => {

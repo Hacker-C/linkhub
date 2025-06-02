@@ -34,12 +34,6 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
                                                              isOpen,
                                                              onClose,
                                                            }) => {
-  useEffect(() => {
-    if (isOpen) {
-      form.reset();
-    }
-  }, [isOpen]);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,6 +41,12 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
       isPublic: false,
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset();
+    }
+  }, [isOpen, form]);
 
   const mutation = useMutation({
     mutationFn: createCategoryAction,

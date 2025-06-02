@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
-import { Session } from "@supabase/supabase-js";
 
 const loginSchema = z.object({
   emailOrUsername: z.union([

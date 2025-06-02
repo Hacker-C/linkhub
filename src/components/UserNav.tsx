@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
-import { deleteCategoryById } from "@/actions/categories";
 import { toast } from "sonner";
 import ConfirmOperationAlertDialog from "@/components/ConfirmOperationAlertDialog";
 import { deleteUserAction } from "@/actions/users";

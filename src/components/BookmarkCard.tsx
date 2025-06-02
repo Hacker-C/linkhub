@@ -39,7 +39,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
       toast.success('Delete bookmark successfully')
       invalidateBookmarkList()
     }
-  }, [bookmark.id]);
+  }, [bookmark.id, invalidateBookmarkList]);
 
   const FaviconDisplayComp = <FaviconDisplay
     isListView={isListView}

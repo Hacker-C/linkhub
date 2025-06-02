@@ -1,4 +1,4 @@
-// File: src/app/api/fetch-meta/route.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import { URL } from 'url';
@@ -118,6 +118,7 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
         iconLink = new URL(rawIconHref, baseOrigin).href; // 解析相对路径
         console.log(`[Route Handler /api/fetch-meta] 通过 'rel=icon' 或 'rel=shortcut icon' 找到图标: ${iconLink}`);
       } catch (e) {
+        console.log(e)
         console.warn(`[Route Handler /api/fetch-meta] 解析 'rel=icon' 图标路径失败: ${rawIconHref}`);
       }
     }
@@ -135,6 +136,7 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
           // iconLink = ogImage; // 取决于您希望哪个作为 'iconLink'
         }
       } catch (e) {
+        console.log(e)
         console.warn(`[Route Handler /api/fetch-meta] 解析 og:image 路径失败: ${rawOgImageHref}`);
       }
     }
@@ -146,7 +148,9 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
         try {
           iconLink = new URL(appleIconTag, baseOrigin).href;
           console.log(`[Route Handler /api/fetch-meta] 通过 'apple-touch-icon' 找到图标: ${iconLink}`);
-        } catch (e) { /* 忽略 */ }
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
 
@@ -158,7 +162,9 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
         iconLink = new URL('/favicon.ico', baseOrigin).href;
         // 实际应用中，你可能需要一个函数去真正验证这个链接是否有效 (e.g. make a HEAD request)
         // 这里我们先假设它存在
-      } catch (e) { /* 忽略 */ }
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     // 如果最终都没有，使用 Google Favicon 服务作为备选
@@ -174,7 +180,6 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
       domain,
       ogImage: ogImage // 也可选择返回 ogImage 供前端决定使用哪个
     };
-
   } catch (error: any) {
     clearTimeout(timeoutId);
     let errorMessage = error.message;
@@ -209,7 +214,7 @@ export async function GET(request: NextRequest) {
 
   console.log(`[Route Handler /api/fetch-meta] === Received GET request. URL parameter: ${url} ===`);
 
-  if (!url || typeof url !== 'string') {
+  if (!url) {
     console.log('[Route Handler /api/fetch-meta] Error: URL parameter is required.');
     return NextResponse.json({ error: 'URL 参数是必需的且必须是字符串。' }, { status: 400 });
   }
