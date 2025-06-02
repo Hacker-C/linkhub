@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /**
  * Default category id，all links
  */
@@ -28,8 +30,18 @@ export const MESSAGES = {
   EMAIL_ALREADY_EXISTS: 'Email already exists',
 
   // common
-  UNKNOWN_ERROR: 'Unknown error', // 未知错误
-  UNAUTHORIZED: 'Unauthorized', // 未授权
-  SERVER_ERROR: 'Server error', // 服务器错误
-  NETWORK_ERROR: 'Network error', // 网络错误
+  UNKNOWN_ERROR: 'Unknown error',
+  UNAUTHORIZED: 'Unauthorized',
+  SERVER_ERROR: 'Server error',
+  NETWORK_ERROR: 'Network error'
 };
+
+
+const OPERATIONS_CONSTANTS = {
+  ADD:'add',
+  DELETE:'delete',
+  UPDATE: 'update',
+  QUERY:'query'
+} as const
+
+export type OPERATIONS = typeof OPERATIONS_CONSTANTS[keyof typeof OPERATIONS_CONSTANTS]

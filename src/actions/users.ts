@@ -1,12 +1,24 @@
 'use server'
 
 import { prisma } from '@/db/prisma'
-import { ResponseWithError, handleError } from '@/lib/utils'
-import { AuthTokenResponsePassword, User, AuthError, AuthResponse, Session } from '@supabase/supabase-js'
+import { ResponseWithError, handleError, withErrorHandle } from '@/lib/utils'
+import { AuthTokenResponsePassword, User, AuthError, AuthResponse } from '@supabase/supabase-js'
 import { createClient } from "@/actions/auth/server";
+import { User as PublicSchemaUserFromPrisma } from '@/actions/generated/client'
+import { validateEmail } from "@/lib/validators";
 
 // Authentication action implementations
-const loginImpl = async (client: SupabaseClient, email: string, password: string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> => {
+const loginImpl = async (client: SupabaseClient, emailOrUsername: string, password: string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> => {
+  let email = emailOrUsername
+  if (validateEmail(emailOrUsername).isNotValid) {
+    const user = await prisma.user.findFirst({
+      where: { username: emailOrUsername },
+    })
+    if (!user) {
+      throw new Error('Could not find user with the username')
+    }
+    email = user.email
+  }
   const { error, data } = await client.auth.signInWithPassword({
     email,
     password
@@ -15,10 +27,18 @@ const loginImpl = async (client: SupabaseClient, email: string, password: string
   return { errorMessage: null, data: data as unknown as AuthTokenResponsePassword['data'] }
 }
 
-const registerImpl = async (client: SupabaseClient, email: string, password: string): Promise<ResponseWithError<AuthResponse>> => {
+const registerImpl = async (
+  client: SupabaseClient,
+  username: string,
+  email: string,
+  password: string
+): Promise<ResponseWithError<AuthResponse>> => {
   const { error, data } = await client.auth.signUp({
     email,
-    password
+    password,
+    options: {
+      emailRedirectTo: 'http://localhost:3001/login', // Email confirm redirect URL
+    },
   })
   if (error) throw error
 
@@ -27,6 +47,7 @@ const registerImpl = async (client: SupabaseClient, email: string, password: str
   await prisma.user.create({
     data: {
       id: userId,
+      username,
       email
     }
   })
@@ -39,6 +60,29 @@ const logoutImpl = async (client: SupabaseClient): Promise<ResponseWithError<{er
   if (error) throw error
   return { errorMessage: null }
 }
+
+const deleteUserImpl = async (client: SupabaseClient): Promise<ResponseWithError<{error: AuthError}>> => {
+  // 1. confirm status
+  const { errorMessage, data } = await getUser()
+  if (errorMessage || !data?.id) throw errorMessage
+  const userId = data.id
+  if (!userId) throw new Error('User sign up error!')
+
+  // 2. delete supabase auth users data
+  const { error } = await client.rpc('delete_user');
+  if (error) {
+    throw error
+  }
+  // 3. delete prisma public users data
+  await prisma.user.delete({
+    where: { id: userId }
+  })
+  // 4. logout
+  await logoutAction()
+
+  return { errorMessage: null }
+}
+
 
 // Define the client type
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>
@@ -61,7 +105,7 @@ const withErrorHandling = <T, D>(actionFn: (client: SupabaseClient, ...args: T[]
 }
 
 export interface LoginParams {
-  email: string;
+  emailOrUsername: string;
   password: string;
 }
 
@@ -71,8 +115,8 @@ export interface LoginParams {
  * @returns Promise with error message or null if successful
  */
 export async function loginAction(params: LoginParams): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> {
-  const { email, password } = params
-  return withErrorHandling(loginImpl)(email, password)
+  const { emailOrUsername, password } = params
+  return withErrorHandling(loginImpl)(emailOrUsername, password)
 }
 
 /**
@@ -81,11 +125,12 @@ export async function loginAction(params: LoginParams): Promise<ResponseWithErro
  * @returns Promise with error message or null if successful
  */
 export async function registerAction(params: {
+  username: string
   email: string
   password: string
 }): Promise<ResponseWithError<AuthResponse>> {
-  const { email, password } = params
-  return withErrorHandling(registerImpl)(email, password)
+  const { username, email, password } = params
+  return withErrorHandling(registerImpl)(username, email, password)
 }
 
 /**
@@ -94,6 +139,14 @@ export async function registerAction(params: {
  */
 export async function logoutAction(): Promise<ResponseWithError<{error: AuthError}>> {
   return withErrorHandling(logoutImpl)()
+}
+
+/**
+ * Delete action - Delete the current user
+ * @returns Promise with error message or null if successful
+ */
+export async function deleteUserAction(): Promise<ResponseWithError<{error: AuthError}>> {
+  return withErrorHandling(deleteUserImpl)()
 }
 
 // Client operation implementations
@@ -115,12 +168,18 @@ export async function getUser() {
 }
 
 // Client operation implementations
-const getSessionImpl = async (client: SupabaseClient): Promise<ResponseWithError<Session>> => {
+const getSessionImpl = async (client: SupabaseClient): Promise<ResponseWithError<PublicSchemaUser>> => {
   const { data, error } = await client.auth.getSession()
-  if (error) {
-    return { errorMessage: error.message }
+  if (error || !data.session) {
+    return { errorMessage: error?.message || 'Auth error' }
   }
-  return { errorMessage: null, data: data.session }
+  
+  const res = await getPublicSchemaUser(data.session.user.id)
+  if (res.errorMessage || !res.data) {
+    throw new AuthError('Could not get user data from pulic schema')
+  }
+
+  return { errorMessage: null, data: res.data }
 }
 
 /**
@@ -130,3 +189,42 @@ const getSessionImpl = async (client: SupabaseClient): Promise<ResponseWithError
 export async function getSession() {
   return withErrorHandling(getSessionImpl)()
 }
+
+const getPublicSchemaUserImpl = async (userId: string): Promise<ResponseWithError<PublicSchemaUser>> => {
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+  })
+  if (!user) {
+    throw new Error('User not found!')
+  }
+  return { errorMessage: null, data: user }
+}
+
+export type PublicSchemaUser = PublicSchemaUserFromPrisma
+
+/**
+ * Get the current authenticated user
+ * @returns The user object or null if not authenticated or error occurs
+ */
+export async function getPublicSchemaUser(userId: string) {
+  return withErrorHandle(getPublicSchemaUserImpl)(userId)
+}
+
+// /**
+//  * Authentication verify action implementations
+//  * @param client
+//  * @param params
+//  */
+// const verifySignUpOtpImpl = async (client: SupabaseClient, token : string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> => {
+//   const { error, data } = await client.auth.verifyOtp({ token_hash: token, type: 'signup' });
+//   if (error) throw error
+//   return { errorMessage: null, data: data as unknown as AuthTokenResponsePassword['data'] }
+// }
+//
+// /**
+//  * Logout action - signs out the current user
+//  * @returns Promise with error message or null if successful
+//  */
+// export async function verifySignUpOtpAction(token : string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> {
+//   return withErrorHandling(verifySignUpOtpImpl)(token)
+// }

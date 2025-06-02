@@ -4,6 +4,8 @@ import { Share, SquareArrowOutUpRight } from "lucide-react";
 import ConfirmOperationAlertDialog from "@/components/ConfirmOperationAlertDialog";
 import React, { useState } from "react";
 import { TreeCategory } from "@/actions/categories";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/AuthContext";
 
 type ShareCategoriesProps = {
   category?: TreeCategory
@@ -18,12 +20,14 @@ export function ShareCategories({category, variant} : ShareCategoriesProps) {
     setShareDialogOpen(true)
   }
   const { id } = category || {}
+  const { user } = useAuth()
+  const url = `/share/${user?.username}/${id}`
   return (
     <>
       {
         new Map<ShareCategoriesProps['variant'], React.ReactNode>()
           .set('text',  <div onClick={onShareMenuItemClick} className='w-full'>Share</div>)
-          .set('icon',  <Share onClick={onShareMenuItemClick} className='w-full'>Share</Share>)
+          .set('icon', <Button variant='ghost' onClick={onShareMenuItemClick}><Share className='w-full'>Share</Share></Button>)
           .get(variant)
       }
       <ConfirmOperationAlertDialog
@@ -31,7 +35,7 @@ export function ShareCategories({category, variant} : ShareCategoriesProps) {
         onOpen={setShareDialogOpen}
         onClose={() => setShareDialogOpen(false)}
         onOk={async () => {
-          await navigator.clipboard.writeText(`/share/[username]/${id}`)
+          await navigator.clipboard.writeText(url)
           toast.success("Copied!");
         }}
         confirmTitle={'You are sharing the links in the category'}
@@ -39,11 +43,11 @@ export function ShareCategories({category, variant} : ShareCategoriesProps) {
         okText={'Copy url'}
       >
         <div className='relative flex items-center'>
-          <Input value={`/share/username/${id}`} readOnly className='pr-10'/>
+          <Input value={url} readOnly className='pr-10'/>
           <SquareArrowOutUpRight
             className="h-4 w-4 text-muted-foreground absolute right-3 flex items-center cursor-pointer"
             onClick={() => {
-              window.open(`/share/username/${id}`)
+              window.open(url)
             }}
           />
         </div>

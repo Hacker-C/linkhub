@@ -22,7 +22,12 @@ import { useAuth } from "@/components/AuthContext";
 import { Session } from "@supabase/supabase-js";
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  emailOrUsername: z.union([
+    z.string().email({ message: 'Invalid email address' }),
+    z.string().regex(/^[a-zA-Z0-9_]{3,20}$/, {
+      message: 'Username must be 3-20 characters, letters, numbers, or underscores only',
+    }),
+  ]),
   password: z.string().min(1, { message: "Password is required" }), // Changed from min(6) to min(1) as per instructions
 });
 
@@ -50,7 +55,7 @@ export default function LoginPage() {
       toast.error(result.errorMessage)
     } else {
       toast.success('Login success!')
-      login(result.data?.session as Session)
+      login()
       router.push('/admin')
     }
   };
@@ -64,12 +69,11 @@ export default function LoginPage() {
       <CardContent className="space-y-4">
         <div className="space-y-1"> {/* Adjusted space-y for error message */}
           <Input
-            type="email"
-            placeholder="Email"
-            {...register("email")}
+            placeholder="Email Or Username"
+            {...register("emailOrUsername")}
           />
-          {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
+          {errors.emailOrUsername && (
+            <p className="text-sm text-red-500">{errors.emailOrUsername.message}</p>
           )}
         </div>
         <div className="space-y-1"> {/* Adjusted space-y for error message */}

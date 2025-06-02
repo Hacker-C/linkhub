@@ -19,7 +19,10 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddBookmarkModalOpen, setIsAddBookmarkModalOpen] = useState(false); // State for AddBookmarkModal
   const router = useRouter()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
+
+  console.log('user')
+  console.log(user)
 
   const logoutMutation = useMutation({
     mutationFn: logoutAction
@@ -63,7 +66,11 @@ export function Header() {
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6 space-x-2">
                 {isLoggedIn ? (
-                  <UserNav onLogoutClick={onLogout} userName="Test User" />
+                  <UserNav
+                    onLogoutClick={onLogout}
+                    userName={user?.username as string}
+                    userEmail={user?.email as string}
+                  />
                 ) : (
                   <AuthButtons onLoginClick={onLogin} onRegisterClick={onRegister} className="space-x-2" />
                 )}
@@ -98,10 +105,14 @@ export function Header() {
                     {isLoggedIn ? (
                       <div className="space-y-3 border-t border-border pt-4">
                         <div className="flex items-center px-1 mb-2">
-                          <UserNav onLogoutClick={() => { onLogout(); setIsMobileMenuOpen(false);}} userName="Test User" />
+                          <UserNav
+                            onLogoutClick={() => { onLogout(); setIsMobileMenuOpen(false);}}
+                            userName={user?.username as string}
+                            userEmail={user?.email as string}
+                          />
                           <div className="ml-3">
-                            <div className="text-base font-medium text-foreground">Test User</div>
-                            <div className="text-sm font-medium text-muted-foreground">user@example.com</div>
+                            <div className="text-base font-medium text-foreground">{user?.username}</div>
+                            <div className="text-sm font-medium text-muted-foreground">{user?.email}</div>
                           </div>
                         </div>
                         {/* Add IBookmark Button for Mobile */}

@@ -15,7 +15,7 @@ interface ConfirmOperationAlertDialogProps {
   onOk: () => void
   okText?: string
   confirmTitle?: string
-  description?: string
+  description?: React.ReactNode
   children?: React.ReactNode
 }
 

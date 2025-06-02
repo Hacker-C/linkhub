@@ -6,7 +6,7 @@ export default function Home() {
     <main className="container mx-auto flex flex-col items-center font-sans">
       {/* Hero Section */}
       <header className="py-16 md:py-24 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold">Linkhub: Your Links, Simplified.</h1>
+        <h1 className="text-4xl md:text-5xl font-bold">LinkHub: Your Links, Simplified.</h1>
         <p className="mt-4 text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
           Effortlessly collect, organize, and share all your important links in one place. Access them anytime, anywhere.
         </p>
@@ -57,7 +57,7 @@ export default function Home() {
       </section>
       {/* Footer */}
       <footer className="py-8 text-center w-full border-t border-gray-200 dark:border-gray-700 mt-12 bg-gray-100 dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} Linkhub. All rights reserved.</p>
+        <p className="text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} LinkHub. All rights reserved.</p>
       </footer>
     </main>
   );

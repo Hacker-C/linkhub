@@ -18,11 +18,11 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Bookmark } from "@/actions/generated/client";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { updateBookmark } from "@/actions/bookmarks";
 import { toast } from "sonner";
 import { CATEGORY_DEFAULT_ID, MESSAGES } from "@/lib/constants";
-import { updateBookmarkCacheData } from "@/actions/states/bookmarkState";
+import { useBookmarkList } from "@/hooks/useBookmarkList";
 
 const editBookmarkSchema = z.object({
   title: z.string(),
@@ -82,11 +82,11 @@ export function EditBookmarkModal({
     }
   }, [bookmark, reset , isOpen]);
 
-  const queryClient = useQueryClient()
+  const { doOperateOnBookmarkCacheData } = useBookmarkList()
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateBookmark,
-    onSuccess: async (note) => {
-      await updateBookmarkCacheData(bookmark?.categoryId ?? CATEGORY_DEFAULT_ID, note, 'update', queryClient)
+    onSuccess: (note) => {
+      doOperateOnBookmarkCacheData(bookmark?.categoryId ?? CATEGORY_DEFAULT_ID, note, 'update')
     }
   })
 

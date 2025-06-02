@@ -20,6 +20,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const signUpSchema = z.object({
+  username: z.string().min(1).max(32),
   email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(8, { message: "Password must be at least 8 characters long" }),
   confirmPassword: z.string(),
@@ -61,6 +62,16 @@ export default function SignUpPage() {
         <CardTitle className="text-2xl font-bold text-center">Sign Up</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="space-y-1">
+          <Input
+            type="username"
+            placeholder="Username"
+            {...register("username")}
+          />
+          {errors.username && (
+            <p className="text-sm text-red-500">{errors.username.message}</p>
+          )}
+        </div>
         <div className="space-y-1">
           <Input
             type="email"

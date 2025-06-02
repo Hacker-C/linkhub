@@ -5,17 +5,14 @@ import React, {
   useContext,
   ReactNode,
 } from 'react';
-import { useRouter } from 'next/navigation';
-import { Session } from '@supabase/supabase-js';
 import { User } from "@/actions/generated/client";
-import { getSession } from "@/actions/users";
+import { getSession, PublicSchemaUser } from "@/actions/users";
 
 interface AuthContextType {
-  session: Session | null;
-  user: User | null; // Supabase user object
+  user: User | null; // Supabase user(public schema) object
   isLoading: boolean;
   isLoggedIn: boolean;
-  login: (session: Session) => void;
+  login: () => void;
   logout: () => void;
 }
 
@@ -26,8 +23,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<PublicSchemaUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
@@ -35,13 +31,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     async function getActiveSession() {
       setIsLoading(true); // Start loading
       try {
-        const { data : session, errorMessage } = await getSession();
-        if (errorMessage || !session) {
+        const { data : user, errorMessage } = await getSession();
+        if (errorMessage || !user) {
           return
         }
-        setSession(session as Session);
+        console.warn(user);
         setIsLoggedIn(true);
-        setUser(session?.user as unknown as User);
+        setUser(user);
       } catch (error) {
         console.error('Error fetching session:', error);
       } finally {
@@ -52,18 +48,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getActiveSession();
   }, []);
 
-  const login = (session: Session) => {
+  const login = () => {
     setIsLoggedIn(true);
-    setSession(session);
   };
 
   const logout = async () => {
     setIsLoggedIn(false)
-    setSession(null)
   };
 
   const value: AuthContextType = {
-    session,
     user,
     isLoading,
     isLoggedIn,
