@@ -111,7 +111,7 @@ async function fetchMetadataInternal(siteUrl: string): Promise<FetchedWebsiteMet
     // 3. 获取图标链接 (模仿 doc.select("link[rel=icon], link[rel=shortcut icon]").first())
     let iconLink: string | undefined = undefined;
     const iconTag = $('link[rel="icon"], link[rel="shortcut icon"]').first();
-    let rawIconHref = iconTag ? iconTag.attr('href') : undefined;
+    const rawIconHref = iconTag ? iconTag.attr('href') : undefined;
 
     if (rawIconHref) {
       try {
