@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --turbopack -p 3001",
     "lint": "next lint",
-    "migrate": "pnpm dlx prisma generate && pnpm dlx cross-env $(cat .env.local | xargs) prisma migrate dev",
+    "migrate": "pnpm dlx prisma generate && pnpm dlx cross-env $(cat .env.local | xargs) prisma migrate dev"
   },
   "prisma": {
     "schema": "src/db/schema.prisma"
@@ -55,6 +55,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "copy-webpack-plugin": "^13.0.0",
     "copyfiles": "^2.4.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
