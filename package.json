@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 3001",
-    "build": "prisma generate && next build",
+    "build": "prisma generate --schema=src/db/schema.prisma && next build",
     "start": "next start --turbopack -p 3001",
     "lint": "next lint",
     "migrate": "pnpm dlx prisma generate && pnpm dlx cross-env $(cat .env.local | xargs) prisma migrate dev"
@@ -55,6 +55,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "copyfiles": "^2.4.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "eslint-plugin-react-hooks": "^5.2.0",

@@ -1,13 +1,12 @@
-// File: next.config.mjs (or next.config.js)
+// next.config.ts
+import type { NextConfig } from 'next'
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true, // Or any other existing configurations
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
   images: {
-    remotePatterns: [
-      // Add any other hostnames you might use here
-    ]
-  }
-};
+    remotePatterns: [] // 你的图片配置
+  },
+  output: 'standalone',
+}
 
-export default nextConfig;
+export default nextConfig
