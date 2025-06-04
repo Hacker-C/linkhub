@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 3001",
-    "build": "next build && prisma generate --schema=./.next/server/db/schema.prisma",
+    "build": "next build",
     "start": "next start --turbopack -p 3001",
     "lint": "next lint",
     "migrate": "pnpm dlx prisma generate && pnpm dlx cross-env $(cat .env.local | xargs) prisma migrate dev",
-    "prisma:generate": "prisma generate --schema=./packages/db/schema.prisma"
   },
   "prisma": {
     "schema": "src/db/schema.prisma"
