@@ -1,6 +1,6 @@
 'use server'
 
-import { Category, Prisma } from "@/actions/generated/client";
+import { Category, Prisma } from "@prisma/client";
 import CategoryUncheckedCreateInput = Prisma.CategoryUncheckedCreateInput;
 import { ResponseWithError, withErrorHandle } from "@/lib/utils";
 import { getUser } from "@/actions/users";

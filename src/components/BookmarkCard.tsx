@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'; // Using shadcn Card as base
 import { HorizontalProgressBar } from '@/components/ui/HorizontalProgressBar';
 import { CircularProgressBar } from '@/components/ui/CircularProgressBar';
 import { EditBookmarkModal } from '@/components/bookmarks/EditBookmarkModal';
-import { Bookmark } from "@/actions/generated/client";
+import { Bookmark } from "@prisma/client";
 import { deleteBookmarkById } from "@/actions/bookmarks";
 import { toast } from "sonner";
 import FaviconDisplay from "@/components/FaviconDisplay";

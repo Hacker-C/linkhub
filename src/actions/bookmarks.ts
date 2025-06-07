@@ -1,6 +1,6 @@
 'use server'
 
-import { Bookmark, Prisma } from "@/actions/generated/client";
+import { Bookmark, Prisma } from "@prisma/client";
 import { prisma } from "@/db/prisma";
 import { ResponseWithError, withErrorHandle } from "@/lib/utils";
 import { getUser } from "@/actions/users";

@@ -20,6 +20,27 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Supabase Configuration
+
+```
+?pgbouncer=true&connection_limit=1
+```
+- pgbouncer=true
+
+| Scenario               | Without PgBouncer                          | With PgBouncer (`pgbouncer=true`)        |
+|------------------------|--------------------------------------------|------------------------------------------|
+| **Connection Overhead** | Each connection occupies a PostgreSQL process | Connection reuse, significantly reducing active processes |
+| **High-Concurrency Performance** | Easily hits database connection limits (default: 100) | Supports thousands of short-lived client connections |
+| **Serverless Adaptation** | High latency on cold starts | Fast connection reuse (e.g., Vercel/Lambda) |
+| **Resource Consumption** | High memory usage | Saves 50%+ memory |
+
+- connection_limit=1
+
+If you directly set connection_limit=1 in PostgreSQL connection parameters (e.g., in a connection string or client configuration), it typically means:
+
+Each client process is limited to a maximum of 1 active database connection.
+Suitable for scenarios requiring strict connection restrictions (e.g., preventing resource abuse).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

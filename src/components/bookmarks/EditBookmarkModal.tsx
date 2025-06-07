@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Bookmark } from "@/actions/generated/client";
+import { Bookmark } from "@prisma/client";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { updateBookmark } from "@/actions/bookmarks";

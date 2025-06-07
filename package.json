@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
-    "@prisma/client": "^6.8.2",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.11",
@@ -51,6 +50,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/eslint-plugin-next": "^15.3.2",
+    "@prisma/client": "^6.9.0",
     "@tailwindcss/postcss": "^4",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
@@ -61,7 +61,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "prisma": "^6.8.2",
+    "prisma": "^6.9.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.0",
     "typescript": "^5"

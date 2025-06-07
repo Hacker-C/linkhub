@@ -4,7 +4,7 @@ import { prisma } from '@/db/prisma'
 import { ResponseWithError, handleError, withErrorHandle } from '@/lib/utils'
 import { AuthTokenResponsePassword, User, AuthError, AuthResponse } from '@supabase/supabase-js'
 import { createClient } from "@/actions/auth/server";
-import { User as PublicSchemaUserFromPrisma } from '@/actions/generated/client'
+import { User as PublicSchemaUserFromPrisma } from "@prisma/client"
 import { validateEmail } from "@/lib/validators";
 
 // Authentication action implementations

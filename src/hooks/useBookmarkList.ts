@@ -4,7 +4,7 @@ import { queryBookmarks } from "@/actions/bookmarks";
 import { useParams } from "next/navigation";
 import { CATEGORY_DEFAULT_ID, OPERATIONS } from "@/lib/constants";
 import { ResponseWithError } from "@/lib/utils";
-import { Bookmark } from "@/actions/generated/client";
+import { Bookmark } from "@prisma/client";
 
 /**
  * Operate Bookmark cache data

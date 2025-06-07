@@ -5,7 +5,7 @@ import React, {
   useContext,
   ReactNode,
 } from 'react';
-import { User } from "@/actions/generated/client";
+import { User } from "@prisma/client";
 import { getSession, PublicSchemaUser } from "@/actions/users";
 
 interface AuthContextType {
