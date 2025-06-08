@@ -40,7 +40,7 @@ export const SidebarContextProvider =  ({ children }: { children: React.ReactNod
   return <SidebarContext.Provider value={contextValue}>{children}</SidebarContext.Provider>
 }
 
-export function Sidebar() {
+export const Sidebar = React.memo(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateSubCategory, setIsCreateSubCategory] = useState(false);
   const { isLoggedIn } = useAuth()
@@ -53,6 +53,8 @@ export function Sidebar() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  console.log('Sidebar rendered');
 
   const { categories: categoriesDB } = useCategories()
 
@@ -107,4 +109,6 @@ export function Sidebar() {
       />
     </>
   );
-}
+})
+
+Sidebar.displayName = 'Sidebar';
