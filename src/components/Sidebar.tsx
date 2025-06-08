@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import { CategoryItem } from './CategoryItem';
 import { Button } from '@/components/ui/button';
-import { Loader2, PanelLeftIcon, Plus } from 'lucide-react';
+import { PanelLeftIcon, Plus } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AddCategoryModal from "@/components/categories/AddCategoryModal";
-import { useParams } from "next/navigation";
 import { TreeCategory } from "@/actions/categories";
-import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
 import { useCategories } from "@/hooks/useCategories";
@@ -44,9 +42,11 @@ export const SidebarContextProvider =  ({ children }: { children: React.ReactNod
 
 export function Sidebar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateSubCategory, setIsCreateSubCategory] = useState(false);
   const { isLoggedIn } = useAuth()
 
-  const handleAddCategoryClick = () => {
+  const handleAddCategoryClick = (isCreateSubCategory: boolean = false) => {
+    setIsCreateSubCategory(isCreateSubCategory);
     setIsModalOpen(true);
   };
 
@@ -54,10 +54,7 @@ export function Sidebar() {
     setIsModalOpen(false);
   };
 
-  const params = useParams()
-  const curCategoryId = params.categoryid as string;
-
-  const { categories: categoriesDB, isLoading } = useCategories()
+  const { categories: categoriesDB } = useCategories()
 
   const categories = !categoriesDB ? [] :  [...categoriesDB]
   const flag = categoriesDB?.some(category => category.id === CATEGORY_DEFAULT_ID)
@@ -77,19 +74,16 @@ export function Sidebar() {
         <ScrollArea className="flex-1  h-[calc(100%-100px)]">
           <nav className="space-y-1">
             {
-              isLoading ? <Loader2 className="animate-spin h-center-absolute" />
-                :
+              // isLoading ? <Loader2 className="animate-spin h-center-absolute" />
+              //   :
                 categories?.map((category) => {
-                  const isActive = curCategoryId === category.id
                   return (
                     <div className='mt-1 w-60' key={category.id}>
-                      <Link href={category.id}>
                         <CategoryItem
                           key={category.id}
                           category={category}
-                          isActive={isActive}
+                          handleAddCategoryClick={handleAddCategoryClick}
                         />
-                      </Link>
                     </div>
                   )
                 })}
@@ -99,7 +93,7 @@ export function Sidebar() {
           <Button
             variant="outline"
             className="mt-auto w-[90%] border-dashed"
-            onClick={handleAddCategoryClick} // Open modal
+            onClick={() => handleAddCategoryClick()} // Open modal
           >
             <Plus className="h-5 w-5 mr-2"/>
             Add Category
@@ -109,6 +103,7 @@ export function Sidebar() {
       <AddCategoryModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        isCreateSubCategory={isCreateSubCategory}
       />
     </>
   );

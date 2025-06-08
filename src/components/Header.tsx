@@ -21,9 +21,6 @@ export function Header() {
   const router = useRouter()
   const { logout, user } = useAuth()
 
-  console.log('user')
-  console.log(user)
-
   const logoutMutation = useMutation({
     mutationFn: logoutAction
   })

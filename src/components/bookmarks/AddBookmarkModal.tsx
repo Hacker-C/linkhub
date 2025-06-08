@@ -88,8 +88,6 @@ const AddBookmarkModal: React.FC<AddBookmarkModalProps> = ({
         ogImageUrl: ogImage,
       } as createBookmarkParams
 
-      console.log(params)
-
       const res = await createBookmarkAction({
         ...params,
         categoryId: categoryId === CATEGORY_DEFAULT_ID ? null : categoryId

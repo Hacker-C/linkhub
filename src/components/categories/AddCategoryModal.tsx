@@ -17,12 +17,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
-import { createCategoryAction } from "@/actions/categories";
+import { createCategoryAction, TreeCategory } from "@/actions/categories";
 import { toast } from "sonner";
+import { usePageParams } from "@/hooks/usePageParams";
+import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
+import { useCategories } from "@/hooks/useCategories";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isCreateSubCategory?: boolean; // Whether this modal is for creating a sub-category
 }
 
 const formSchema = z.object({
@@ -31,9 +35,10 @@ const formSchema = z.object({
 });
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
-                                                             isOpen,
-                                                             onClose,
-                                                           }) => {
+ isOpen,
+ onClose,
+  isCreateSubCategory = false,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,12 +59,21 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
 
   const { isPending, isError, error } = mutation;
 
+  const categoryId = usePageParams('categoryid')
+  const { doOperationsOnCategoryCacheData } = useCategories()
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await mutation.mutateAsync(values);
+    const params = {
+      ...values,
+      parentId: isCreateSubCategory && (categoryId !== CATEGORY_DEFAULT_ID) ? categoryId : null,
+    }
+    const res = await mutation.mutateAsync(params);
     if (res.errorMessage) {
       toast.error(res.errorMessage)
     } else {
       toast.success('Add category successfully!');
+      const category = res.data as TreeCategory
+      doOperationsOnCategoryCacheData(category, 'add')
+      doOperationsOnCategoryCacheData(category, 'active')
       onClose();
     }
   }

@@ -26,7 +26,7 @@ export default function ConfirmOperationAlertDialog({
   onOk,
   okText = 'Ok',
   confirmTitle = 'Are you absolutely sure ?',
-  description = ' This action cannot be undone. This will permanently remove your data from our servers.',
+  description = ' This action cannot be undone. This will permanently remove the category and related links from our servers.',
   children
 } : ConfirmOperationAlertDialogProps) {
 
