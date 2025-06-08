@@ -47,7 +47,7 @@ export type TreeCategory = Category & {
  * Query categories recursively and efficiently.
  * @param id - Optional. The ID of the category to start from. If not provided, starts from all root categories.
  */
-const queryCategoriesImpl = async (id?: string): Promise<ResponseWithError<TreeCategory[]>> => {
+const queryCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory[]>> => {
   const res = await getUser();
   if (res?.errorMessage || !res?.data?.id) {
     throw new Error(res.errorMessage || 'Unknown user');
@@ -141,8 +141,8 @@ const queryCategoriesImpl = async (id?: string): Promise<ResponseWithError<TreeC
  * Query categories
  * @param params
  */
-export async function queryCategories(id?: string): Promise<ResponseWithError<TreeCategory[]>> {
-  return withErrorHandle(queryCategoriesImpl)(id)
+export async function queryCategories(): Promise<ResponseWithError<TreeCategory[]>> {
+  return withErrorHandle(queryCategoriesImpl)()
 }
 
 /**
