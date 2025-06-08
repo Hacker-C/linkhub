@@ -11,7 +11,6 @@ import AddBookmarkModal from "@/components/bookmarks/AddBookmarkModal";
 import { useBookmarkList } from "@/hooks/useBookmarkList";
 import { usePageParams } from "@/hooks/usePageParams";
 import { CATEGORY_DEFAULT_ID } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 import { ShareCategories } from "@/components/ShareCategories";
 import { useCategories } from "@/hooks/useCategories";
 import useSafeLocalStorage from "@/hooks/useSafeLocalStorage";
@@ -54,7 +53,11 @@ export default function AdminPage() {
           <Button variant="ghost" className="rounded-full" onClick={() => refetch()}>
             <RotateCcw />
           </Button>
-          <ShareCategories category={category as TreeCategory} variant='icon' />
+          {
+            categoryid !== CATEGORY_DEFAULT_ID
+              && category?.isPublic
+              && <ShareCategories category={category as TreeCategory} variant='icon' />
+          }
           <LayoutSwitcher currentLayout={layout!} onLayoutChange={setLayout} />
           <Button onClick={handleAddBookmark}>
             <Plus className="h-5 w-5 mr-2" />

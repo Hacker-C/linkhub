@@ -82,6 +82,30 @@ export async function queryBookmarks(params: queryBookmarksParams): Promise<Resp
   return withErrorHandle(queryBookmarksImpl)(params)
 }
 
+/**
+ * Query public bookmarks by categoryId
+ * @param title
+ * @param url
+ * @param categoryId
+ * @param description
+ */
+const queryPublicBookmarksByCategoryIdImpl = async (
+  { categoryId }: queryBookmarksParams
+): Promise<ResponseWithError<Bookmark[]>> => {
+  const result = await prisma.bookmark.findMany({
+    where: { categoryId }
+  })
+  return { errorMessage: null, data: result }
+}
+
+/**
+ * Public Query bookmarks by categoryId
+ * @param params
+ */
+export async function queryPublicBookmarksByCategoryId(params: queryBookmarksParams): Promise<ResponseWithError<Bookmark[]>> {
+  return withErrorHandle(queryPublicBookmarksByCategoryIdImpl)(params)
+}
+
 const deleteBookmarkByIdImpl = async (id: string ): Promise<ResponseWithError<Bookmark>> => {
   const result = await prisma.bookmark.delete({
     where: { id }

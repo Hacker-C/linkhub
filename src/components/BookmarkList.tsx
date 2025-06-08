@@ -7,10 +7,11 @@ import { useBookmarkList } from "@/hooks/useBookmarkList";
 
 interface BookmarkListProps {
   layout: 'grid' | 'list';
+  isPublicQuery?: boolean
 }
 
-export function BookmarkList({ layout }: BookmarkListProps) {
-  const { isLoading, queryResult } = useBookmarkList()
+export function BookmarkList({ layout, isPublicQuery = false }: BookmarkListProps) {
+  const { isLoading, queryResult } = useBookmarkList(isPublicQuery)
   const bookmarks = queryResult?.data || []
 
   if (isLoading) {

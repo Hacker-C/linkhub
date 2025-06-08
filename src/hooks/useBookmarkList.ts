@@ -1,6 +1,6 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/actions/lib/queryKeys";
-import { queryBookmarks } from "@/actions/bookmarks";
+import { queryBookmarks, queryPublicBookmarksByCategoryId } from "@/actions/bookmarks";
 import { useParams } from "next/navigation";
 import { CATEGORY_DEFAULT_ID, OPERATIONS } from "@/lib/constants";
 import { ResponseWithError } from "@/lib/utils";
@@ -54,7 +54,7 @@ const operateBookmarkCacheData = (queryClient : QueryClient) => (
 /**
  * useBookmarkList
  */
-export const useBookmarkList = () => {
+export const useBookmarkList = (isPublicQuery: boolean = false) => {
   const params = useParams()
   const categoryId = params.categoryid as string
   const queryClient = useQueryClient()
@@ -62,7 +62,9 @@ export const useBookmarkList = () => {
   const queryDBCategoryId = (categoryId === CATEGORY_DEFAULT_ID || !categoryId) ? null : categoryId
   const { isLoading, data: queryResult, refetch } = useQuery({
     queryKey: queryKeys.queryBookmarksByCategoryId(queryDBCategoryId as string),
-    queryFn: () => queryBookmarks({ categoryId: queryDBCategoryId }),
+    queryFn: () => isPublicQuery
+      ? queryPublicBookmarksByCategoryId({ categoryId: queryDBCategoryId })
+      : queryBookmarks({ categoryId: queryDBCategoryId }),
   })
 
   // invalidate data

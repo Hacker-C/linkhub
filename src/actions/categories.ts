@@ -47,7 +47,7 @@ export type TreeCategory = Category & {
  * Query categories recursively and efficiently.
  * @param id - Optional. The ID of the category to start from. If not provided, starts from all root categories.
  */
-const queryCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory[]>> => {
+const queryTreeCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory[]>> => {
   const res = await getUser();
   if (res?.errorMessage || !res?.data?.id) {
     throw new Error(res.errorMessage || 'Unknown user');
@@ -142,14 +142,14 @@ const queryCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory[]>>
  * @param params
  */
 export async function queryCategories(): Promise<ResponseWithError<TreeCategory[]>> {
-  return withErrorHandle(queryCategoriesImpl)()
+  return withErrorHandle(queryTreeCategoriesImpl)()
 }
 
 /**
  * Query category
  * @param params
  */
-const queryCategoryImpl = async (id: string): Promise<ResponseWithError<TreeCategory>> => {
+const queryCategoryByIdImpl = async (id: string): Promise<ResponseWithError<TreeCategory>> => {
   const result = await prisma.category.findUnique({
     where: {
       id
@@ -162,8 +162,8 @@ const queryCategoryImpl = async (id: string): Promise<ResponseWithError<TreeCate
  * Query category
  * @param params
  */
-export async function queryCategory(id: string): Promise<ResponseWithError<TreeCategory>> {
-  return withErrorHandle(queryCategoryImpl)(id)
+export async function queryCategoryById(id: string): Promise<ResponseWithError<TreeCategory>> {
+  return withErrorHandle(queryCategoryByIdImpl)(id)
 }
 
 /**

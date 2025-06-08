@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import FaviconDisplay from "@/components/FaviconDisplay";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useBookmarkList } from "@/hooks/useBookmarkList";
+import { useAuth } from "@/components/AuthContext";
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
@@ -26,6 +27,7 @@ interface BookmarkCardProps {
 }
 
 export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
+  const { isLoggedIn } = useAuth()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { invalidateBookmarkList } = useBookmarkList()
 
@@ -73,7 +75,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
                 <HorizontalProgressBar value={bookmark.readingProgress || 0} className="h-1.5"/>
               </div>
             )}
-            <DropdownMenu>
+            { isLoggedIn && <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="card-action-button h-7 w-7"
                         onClick={(e) => e.preventDefault()}> {/* Ensure button is not part of the link */}
@@ -86,7 +88,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive-foreground">Delete</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> }
           </div>
         </div>
         <EditBookmarkModal
@@ -123,13 +125,14 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
             </div>
             <div
               className="absolute top-3 right-3 flex flex-col items-end space-y-1"> {/* Container for dropdown and progress */}
-              <DropdownMenu>
+              { isLoggedIn && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
                     className="card-action-button opacity-0 group-hover:opacity-100 focus:opacity-100"
-                    onClick={(e) => e.preventDefault()}>
+                    onClick={(e) => e.preventDefault()}
+                  >
                     <Settings className=""/>
                   </Button>
                 </DropdownMenuTrigger>
@@ -139,7 +142,7 @@ export function BookmarkCard({ bookmark, isListView }: BookmarkCardProps) {
                   <DropdownMenuItem className="text-destructive focus:text-destructive-foreground"
                                     onClick={handleDeleteBookmark}>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> }
             </div>
           </div>
           <p className="card-description text-sm text-muted-foreground leading-relaxed line-clamp-2 my-2 px-4 h-12">

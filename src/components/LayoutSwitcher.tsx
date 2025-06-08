@@ -21,13 +21,13 @@ export function LayoutSwitcher({ currentLayout, onLayoutChange }: LayoutSwitcher
               size="icon"
               className={`p-1.5 rounded-md hover:bg-accent ${currentLayout === 'grid' ? 'active-layout-btn' : ''}`}
               onClick={() => onLayoutChange('grid')}
-              aria-label="网格视图"
+              aria-label="Grid View"
             >
               <LayoutGrid className={`w-5 h-5 ${currentLayout === 'grid' ? 'text-primary' : 'text-muted-foreground'}`} />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>网格视图</p>
+            <p>Grid View</p>
           </TooltipContent>
         </Tooltip>
         <Tooltip>
@@ -38,13 +38,13 @@ export function LayoutSwitcher({ currentLayout, onLayoutChange }: LayoutSwitcher
               size="icon"
               className={`p-1.5 rounded-md hover:bg-accent ${currentLayout === 'list' ? 'active-layout-btn' : ''}`}
               onClick={() => onLayoutChange('list')}
-              aria-label="列表视图"
+              aria-label="List View"
             >
               <List className={`w-5 h-5 ${currentLayout === 'list' ? 'text-primary' : 'text-muted-foreground'}`} />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>列表视图</p>
+            <p>List View</p>
           </TooltipContent>
         </Tooltip>
       </div>
