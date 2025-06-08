@@ -4,7 +4,7 @@ Effortlessly collect, organize, and share all your important links in one place.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/4927c634-e59c-4b87-b4bf-0c64e03b5947/deploy-status)](https://app.netlify.com/projects/lnchub/deploys)
 
-## Tech Stack List
+## Tech Stack Listo
 
 - [Next.js](https://nextjs.org/) - The React Framework for Production
 - [Supabase](https://supabase.com/) - The Open Source Firebase Alternative

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { AuthButtons } from './AuthButtons';
 import { UserNav } from './UserNav';
 import { Menu, X, PlusCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -36,14 +35,6 @@ export function Header() {
     })
   }
 
-  const onLogin = () => {
-    router.push('/login')
-  }
-
-  const onRegister = () => {
-    router.push('/sign-up')
-  }
-
   const openAddBookmarkModal = () => setIsAddBookmarkModalOpen(true);
   const closeAddBookmarkModal = () => setIsAddBookmarkModalOpen(false);
 
@@ -62,15 +53,13 @@ export function Header() {
             {/* Desktop Navigation */}
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6 space-x-2">
-                {isLoggedIn ? (
+                {isLoggedIn &&
                   <UserNav
                     onLogoutClick={onLogout}
                     userName={user?.username as string}
                     userEmail={user?.email as string}
                   />
-                ) : (
-                  <AuthButtons onLoginClick={onLogin} onRegisterClick={onRegister} className="space-x-2" />
-                )}
+                }
                 <div className='ml-2'> {/* This div might cause double spacing if UserNav/AuthButtons also have ml. Adjusted parent to space-x-2 */}
                   <ModeToggle />
                 </div>
@@ -98,8 +87,6 @@ export function Header() {
                         </Button>
                       </SheetClose>
                     </div>
-
-                    {isLoggedIn ? (
                       <div className="space-y-3 border-t border-border pt-4">
                         <div className="flex items-center px-1 mb-2">
                           <UserNav
@@ -127,13 +114,7 @@ export function Header() {
                         <Button variant="ghost" className="w-full justify-start" onClick={() => setIsMobileMenuOpen(false)}>My Account</Button>
                         <Button variant="ghost" className="w-full justify-start" onClick={() => { onLogout(); setIsMobileMenuOpen(false);}}>Logout</Button>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Button variant="outline" className="w-full" onClick={() => { onLogin(); setIsMobileMenuOpen(false);}}>Login</Button>
-                        <Button className="w-full" onClick={() => { onRegister(); setIsMobileMenuOpen(false);}}>Sign Up</Button>
-                      </div>
-                    )}
-
+                    )
                   </div>
                 </SheetContent>
               </Sheet>
