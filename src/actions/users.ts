@@ -1,32 +1,47 @@
 'use server'
 
 import { prisma } from '@/db/prisma'
-import { ResponseWithError, handleError, withErrorHandle } from '@/lib/utils'
-import { AuthTokenResponsePassword, User, AuthError, AuthResponse } from '@supabase/supabase-js'
+import { handleError, ResponseWithError, withErrorHandle } from '@/lib/utils'
+import { AuthError, AuthResponse, User } from '@supabase/supabase-js'
 import { createClient } from "@/actions/auth/server";
 import { User as PublicSchemaUserFromPrisma } from "@prisma/client"
 import { validateEmail } from "@/lib/validators";
 
-// Authentication action implementations
-const loginImpl = async (client: SupabaseClient, emailOrUsername: string, password: string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> => {
+/* region ########## actions implement ########## */
+
+/**
+ * Login implementation - authenticates a user with email or username and password
+ * @param client
+ * @param emailOrUsername
+ * @param password
+ */
+const loginImpl = async (client: SupabaseClient, emailOrUsername: string, password: string): Promise<ResponseWithError<PublicSchemaUser>> => {
   let email = emailOrUsername
+  let prismaUser: PublicSchemaUser | null = null
   if (validateEmail(emailOrUsername).isNotValid) {
-    const user = await prisma.user.findFirst({
+    prismaUser = await prisma.user.findFirst({
       where: { username: emailOrUsername },
     })
-    if (!user) {
+    if (!prismaUser) {
       throw new Error('Could not find user with the username')
     }
-    email = user.email
+    email = prismaUser.email
   }
-  const { error, data } = await client.auth.signInWithPassword({
+  const { error } = await client.auth.signInWithPassword({
     email,
     password
   })
   if (error) throw error
-  return { errorMessage: null, data: data as unknown as AuthTokenResponsePassword['data'] }
+  return { errorMessage: null, data: prismaUser }
 }
 
+/**
+ * Register implementation - creates a new user account with username, email, and password
+ * @param client
+ * @param username
+ * @param email
+ * @param password
+ */
 const registerImpl = async (
   client: SupabaseClient,
   username: string,
@@ -55,12 +70,20 @@ const registerImpl = async (
   return { errorMessage: null }
 }
 
+/**
+ * Logout implementation - signs out the current user
+ * @param client
+ */
 const logoutImpl = async (client: SupabaseClient): Promise<ResponseWithError<{error: AuthError}>> => {
   const { error } = await client.auth.signOut()
   if (error) throw error
   return { errorMessage: null }
 }
 
+/**
+ * Delete user implementation - deletes the current user from both Supabase auth and Prisma public schema
+ * @param client
+ */
 const deleteUserImpl = async (client: SupabaseClient): Promise<ResponseWithError<{error: AuthError}>> => {
   // 1. confirm status
   const { errorMessage, data } = await getUser()
@@ -96,8 +119,7 @@ const withErrorHandling = <T, D>(actionFn: (client: SupabaseClient, ...args: T[]
   return async (...args: T[]): Promise<ResponseWithError<D>> => {
     try {
       const client = await createClient()
-      const result = await actionFn(client, ...args)
-      return result
+      return await actionFn(client, ...args)
     } catch (error) {
       return handleError(error)
     }
@@ -109,45 +131,6 @@ export interface LoginParams {
   password: string;
 }
 
-/**
- * Login action - authenticates a user with email and password
- * @param params - Object containing email and password
- * @returns Promise with error message or null if successful
- */
-export async function loginAction(params: LoginParams): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> {
-  const { emailOrUsername, password } = params
-  return withErrorHandling(loginImpl)(emailOrUsername, password)
-}
-
-/**
- * Register action - creates a new user account
- * @param params - Object containing email and password
- * @returns Promise with error message or null if successful
- */
-export async function registerAction(params: {
-  username: string
-  email: string
-  password: string
-}): Promise<ResponseWithError<AuthResponse>> {
-  const { username, email, password } = params
-  return withErrorHandling(registerImpl)(username, email, password)
-}
-
-/**
- * Logout action - signs out the current user
- * @returns Promise with error message or null if successful
- */
-export async function logoutAction(): Promise<ResponseWithError<{error: AuthError}>> {
-  return withErrorHandling(logoutImpl)()
-}
-
-/**
- * Delete action - Delete the current user
- * @returns Promise with error message or null if successful
- */
-export async function deleteUserAction(): Promise<ResponseWithError<{error: AuthError}>> {
-  return withErrorHandling(deleteUserImpl)()
-}
 
 // Client operation implementations
 const getUserImpl = async (client: SupabaseClient): Promise<ResponseWithError<User>> => {
@@ -190,6 +173,10 @@ export async function getSession() {
   return withErrorHandling(getSessionImpl)()
 }
 
+/**
+ * Get public schema user by userId
+ * @param userId
+ */
 const getPublicSchemaUserImpl = async (userId: string): Promise<ResponseWithError<PublicSchemaUser>> => {
   const user = await prisma.user.findFirst({
     where: { id: userId },
@@ -202,6 +189,51 @@ const getPublicSchemaUserImpl = async (userId: string): Promise<ResponseWithErro
 
 export type PublicSchemaUser = PublicSchemaUserFromPrisma
 
+/* endregion ########## actions implement ########## */
+
+/* region ########## actions for client ########## */
+
+/**
+ * Login action - authenticates a user with email and password
+ * @param params - Object containing email and password
+ * @returns Promise with error message or null if successful
+ */
+export async function loginAction(params: LoginParams): Promise<ResponseWithError<PublicSchemaUser>> {
+  const { emailOrUsername, password } = params
+  return withErrorHandling(loginImpl)(emailOrUsername, password)
+}
+
+/**
+ * Register action - creates a new user account
+ * @param params - Object containing email and password
+ * @returns Promise with error message or null if successful
+ */
+export async function registerAction(params: {
+  username: string
+  email: string
+  password: string
+}): Promise<ResponseWithError<AuthResponse>> {
+  const { username, email, password } = params
+  return withErrorHandling(registerImpl)(username, email, password)
+}
+
+/**
+ * Logout action - signs out the current user
+ * @returns Promise with error message or null if successful
+ */
+export async function logoutAction(): Promise<ResponseWithError<{error: AuthError}>> {
+  return withErrorHandling(logoutImpl)()
+}
+
+/**
+ * Delete action - Delete the current user
+ * @returns Promise with error message or null if successful
+ */
+export async function deleteUserAction(): Promise<ResponseWithError<{error: AuthError}>> {
+  return withErrorHandling(deleteUserImpl)()
+}
+
+
 /**
  * Get the current authenticated user
  * @returns The user object or null if not authenticated or error occurs
@@ -210,21 +242,4 @@ export async function getPublicSchemaUser(userId: string) {
   return withErrorHandle(getPublicSchemaUserImpl)(userId)
 }
 
-// /**
-//  * Authentication verify action implementations
-//  * @param client
-//  * @param params
-//  */
-// const verifySignUpOtpImpl = async (client: SupabaseClient, token : string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> => {
-//   const { error, data } = await client.auth.verifyOtp({ token_hash: token, type: 'signup' });
-//   if (error) throw error
-//   return { errorMessage: null, data: data as unknown as AuthTokenResponsePassword['data'] }
-// }
-//
-// /**
-//  * Logout action - signs out the current user
-//  * @returns Promise with error message or null if successful
-//  */
-// export async function verifySignUpOtpAction(token : string): Promise<ResponseWithError<AuthTokenResponsePassword['data']>> {
-//   return withErrorHandling(verifySignUpOtpImpl)(token)
-// }
+/* endregion ########## actions for client ########## */

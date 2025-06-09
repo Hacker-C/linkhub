@@ -48,13 +48,13 @@ export default function LoginPage() {
     mutationFn: loginAction
   })
   const { isPending, data: result } = loginMutation
-  const onSubmit = async (data: LoginFormValues) => {
-    const result = await loginMutation.mutateAsync(data)
-    if (result.errorMessage) {
-      toast.error(result.errorMessage)
+  const onSubmit = async (params: LoginFormValues) => {
+    const { errorMessage, data } = await loginMutation.mutateAsync(params)
+    if (errorMessage || !data) {
+      toast.error(errorMessage)
     } else {
       toast.success('Login success!')
-      login()
+      login(data)
       router.push('/admin')
     }
   };

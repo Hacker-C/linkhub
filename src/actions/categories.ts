@@ -6,6 +6,13 @@ import { buildTree, ResponseWithError, withErrorHandle } from "@/lib/utils";
 import { getUser } from "@/actions/users";
 import { prisma } from "@/db/prisma";
 
+export type CreateCategoryParams = Pick<CategoryUncheckedCreateInput, 'isPublic' | 'name' | 'parentId'>
+
+export type TreeCategory = Category & {
+  subCategories: TreeCategory[];
+  itemCount: number
+  isSubMenuOpen: boolean
+};
 
 /**
  * Create category
@@ -26,22 +33,6 @@ const createCategoryImpl = async (
   })
   return { errorMessage: null, data: result }
 }
-
-export type CreateCategoryParams = Pick<CategoryUncheckedCreateInput, 'isPublic' | 'name' | 'parentId'>
-
-/**
- * Create category
- * @param params
- */
-export async function createCategoryAction(params: CreateCategoryParams): Promise<ResponseWithError<Category>> {
-  return withErrorHandle(createCategoryImpl)(params)
-}
-
-export type TreeCategory = Category & {
-  subCategories: TreeCategory[];
-  itemCount: number
-  isSubMenuOpen: boolean
-};
 
 /**
  * Query categories recursively and efficiently.
@@ -101,49 +92,6 @@ const queryTreeCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory
   return { errorMessage: null, data: categoryTree };
 };
 
-/**
- * Query categories
- * @param params
- */
-// const queryCategoriesImpl2 = async (id? : string): Promise<ResponseWithError<TreeCategory[]>> => {
-//   const res = await getUser()
-//   if (res?.errorMessage || !res?.data?.id) {
-//     throw new Error(res.errorMessage || 'Unknown error')
-//   }
-//   const userId = res.data.id!; // 确保 userId 存在
-//
-//   const whereClause = {
-//     userId: userId, // 直接使用 userId 字段
-//   } as { id: string, userId: string }
-//
-//   if (id) {
-//     whereClause.id = id;
-//   }
-//
-//   console.log('whereClause=', whereClause);
-//
-//   const categories = await prisma.category.findMany({
-//     where: { ...whereClause, parentId: { equals: null } },
-//   }) as TreeCategory[];
-//
-//   for (const category of categories) {
-//     const subCategories = await prisma.category.findMany({
-//       where: { parentId: category.id },
-//     }) as TreeCategory[]
-//     category.subCategories = subCategories || []
-//     category.itemCount = subCategories.length
-//   }
-//
-//   return { errorMessage: null, data: categories }
-// }
-
-/**
- * Query categories
- * @param params
- */
-export async function queryCategories(): Promise<ResponseWithError<TreeCategory[]>> {
-  return withErrorHandle(queryTreeCategoriesImpl)()
-}
 
 /**
  * Query category
@@ -158,13 +106,6 @@ const queryCategoryByIdImpl = async (id: string): Promise<ResponseWithError<Tree
   return { errorMessage: null, data: result as TreeCategory }
 }
 
-/**
- * Query category
- * @param params
- */
-export async function queryCategoryById(id: string): Promise<ResponseWithError<TreeCategory>> {
-  return withErrorHandle(queryCategoryByIdImpl)(id)
-}
 
 /**
  * Delete category
@@ -175,6 +116,32 @@ const deleteCategoryByIdImpl = async (id: string): Promise<ResponseWithError<Tre
     where: { id }
   })
   return { errorMessage: null, data: result as TreeCategory }
+}
+
+/* ########## actions for client ########## */
+
+/**
+ * Query categories
+ * @param params
+ */
+export async function queryCategories(): Promise<ResponseWithError<TreeCategory[]>> {
+  return withErrorHandle(queryTreeCategoriesImpl)()
+}
+
+/**
+ * Query category
+ * @param params
+ */
+export async function queryCategoryById(id: string): Promise<ResponseWithError<TreeCategory>> {
+  return withErrorHandle(queryCategoryByIdImpl)(id)
+}
+
+/**
+ * Create category
+ * @param params
+ */
+export async function createCategoryAction(params: CreateCategoryParams): Promise<ResponseWithError<Category>> {
+  return withErrorHandle(createCategoryImpl)(params)
 }
 
 /**

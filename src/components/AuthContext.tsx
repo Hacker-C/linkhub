@@ -5,14 +5,13 @@ import React, {
   useContext,
   ReactNode,
 } from 'react';
-import { User } from "@prisma/client";
 import { getSession, PublicSchemaUser } from "@/actions/users";
 
 interface AuthContextType {
-  user: User | null; // Supabase user(public schema) object
+  user: PublicSchemaUser | null; // Supabase user(public schema) object
   isLoading: boolean;
   isLoggedIn: boolean;
-  login: () => void;
+  login: (user: PublicSchemaUser) => void;
   logout: () => void;
 }
 
@@ -35,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (errorMessage || !user) {
           return
         }
-        console.warn(user);
+        console.log('user=', user);
         setIsLoggedIn(true);
         setUser(user);
       } catch (error) {
@@ -48,8 +47,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getActiveSession();
   }, []);
 
-  const login = () => {
+  const login = (user: PublicSchemaUser) => {
     setIsLoggedIn(true);
+    setUser(user);
   };
 
   const logout = async () => {
