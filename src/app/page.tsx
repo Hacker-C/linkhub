@@ -1,9 +1,14 @@
 import { PlusSquare, Share2, FolderKanban } from 'lucide-react';
 import Link from 'next/link';
+import { ModeToggle } from "@/components/ModeToggle";
+import React from "react";
 
 export default function Home() {
   return (
-    <main className="container mx-auto flex flex-col items-center font-sans">
+    <main className="container mx-auto flex flex-col items-center font-sans px-4">
+      <div className='absolute right-6 top-4'>
+        <ModeToggle/>
+      </div>
       {/* Hero Section */}
       <header className="py-16 md:py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold">LinkHub: Your Links, Simplified.</h1>
@@ -56,8 +61,8 @@ export default function Home() {
         </div>
       </section>
       {/* Footer */}
-      <footer className="py-8 text-center w-full border-t border-gray-200 dark:border-gray-700 mt-12 bg-gray-100 dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">&copy; {new Date().getFullYear()} LinkHub. All rights reserved.</p>
+      <footer className="py-6 text-center w-full text-gray-500 dark:text-gray-400 mt-12 ">
+        &copy; {new Date().getFullYear()} <Link href='https://github.com/Hacker-C/linkhub' className='underline' target='_blank'>LinkHub</Link>. All rights reserved.
       </footer>
     </main>
   );

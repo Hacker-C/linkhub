@@ -54,8 +54,6 @@ export const Sidebar = React.memo(() => {
     setIsModalOpen(false);
   };
 
-  console.log('Sidebar rendered');
-
   const { categories: categoriesDB } = useCategories()
 
   const categories = !categoriesDB ? [] :  [...categoriesDB]

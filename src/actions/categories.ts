@@ -35,6 +35,24 @@ const createCategoryImpl = async (
 }
 
 /**
+ * Update category
+ * @param params
+ */
+const updateCategoryImpl = async (
+  params: Prisma.CategoryUpdateInput
+): Promise<ResponseWithError<Category>> => {
+  const res = await getUser()
+  if (res?.errorMessage || !res?.data?.id) {
+    throw new Error(res.errorMessage || 'Unknown error')
+  }
+  const result = await prisma.category.update({
+    where: { id: params.id as string },
+    data: params
+  })
+  return { errorMessage: null, data: result }
+}
+
+/**
  * Query categories recursively and efficiently.
  * @param id - Optional. The ID of the category to start from. If not provided, starts from all root categories.
  */
@@ -103,7 +121,38 @@ const queryCategoryByIdImpl = async (id: string): Promise<ResponseWithError<Tree
       id
     }
   })
+
+  if (!result || !result.isPublic) {
+    return { errorMessage: 'Category not found', data: null }
+  }
+
   return { errorMessage: null, data: result as TreeCategory }
+}
+
+/**
+ * Query category
+ * @param params
+ */
+const queryPublicCategoriesOfUserImpl = async (username: string): Promise<ResponseWithError<TreeCategory[]>> => {
+  const { id } = await prisma.user.findFirst({
+    where: { username },
+    select: { id: true }
+  }) || {};
+  if (!id) {
+    return { errorMessage: 'User not found', data: null }
+  }
+  const result = await prisma.category.findMany({
+    where: {
+      userId: id,
+      isPublic: true
+    }
+  })
+
+  if (!result || result.length === 0) {
+    return { errorMessage: 'Category not found', data: null }
+  }
+
+  return { errorMessage: null, data: result as TreeCategory[] }
 }
 
 
@@ -145,9 +194,26 @@ export async function createCategoryAction(params: CreateCategoryParams): Promis
 }
 
 /**
+ * Update category
+ * @param params
+ */
+export async function updateCategory(params: Prisma.CategoryUpdateInput): Promise<ResponseWithError<Category>> {
+  return withErrorHandle(updateCategoryImpl)(params)
+}
+
+
+/**
  * Delete category
  * @param id category id
  */
 export async function deleteCategoryById(id: string): Promise<ResponseWithError<TreeCategory>> {
   return withErrorHandle(deleteCategoryByIdImpl)(id)
+}
+
+/**
+ * Delete category
+ * @param id category id
+ */
+export async function queryPublicCategoriesOfUser(id: string): Promise<ResponseWithError<TreeCategory[]>> {
+  return withErrorHandle(queryPublicCategoriesOfUserImpl)(id)
 }

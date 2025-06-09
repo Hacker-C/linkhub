@@ -51,7 +51,7 @@ export default function SignUpPage() {
     if (result.errorMessage) {
       toast.error(result.errorMessage)
     } else {
-      toast.success('Sign up success!')
+      toast.success('Sign up success! A verification email has been sent to your email address.')
       router.push('/login')
     }
   };
