@@ -33,9 +33,10 @@ export default function Page() {
   }
 
   return <>
-    <div className='px-4 sm:px-6 md:px-10 lg:px-16'>
-      <div className='relative'>
-        <TypographyH2 className='text-center py-10 border-0'>
+    <div className="flex flex-col min-h-screen">
+      <div className='px-4 sm:px-6 md:px-10 lg:px-16 flex-1'>
+        <div className='relative'>
+          <TypographyH2 className='text-center py-10 border-0'>
           {category.name} shared by <Link href={`/share/${username}`} className='underline'>LinkHub / {username}</Link>
         </TypographyH2>
         <div className='absolute right-0 top-4'>
@@ -49,10 +50,11 @@ export default function Page() {
         </div>
       </div>
     </div>
-    <footer className="mt-6 text-center text-md text-gray-500 dark:text-gray-400 absolute bottom-4 w-full">
+    <footer className="mt-6 text-center text-md text-gray-500 dark:text-gray-400">
       &copy; {new Date().getFullYear()} <Link href='https://github.com/Hacker-C/linkhub' className='underline'
                                               target='_blank'>LinkHub</Link>. All rights reserved.
     </footer>
+    </div>
   </>
 }
 
