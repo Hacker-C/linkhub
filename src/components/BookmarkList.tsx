@@ -10,9 +10,18 @@ interface BookmarkListProps {
   isPublicQuery?: boolean
 }
 
+import { Button } from "@/components/ui/button"; // Import Button component
+
 export function BookmarkList({ layout, isPublicQuery = false }: BookmarkListProps) {
-  const { isLoading, queryResult } = useBookmarkList(isPublicQuery)
-  const bookmarks = queryResult?.data || []
+  const {
+    isLoading, // Initial load
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useBookmarkList(isPublicQuery);
+
+  const bookmarks = data?.pages.flatMap(page => page?.data || []) || [];
 
   if (isLoading) {
     return (
@@ -22,7 +31,7 @@ export function BookmarkList({ layout, isPublicQuery = false }: BookmarkListProp
     )
   }
 
-  if (!bookmarks || bookmarks.length === 0) {
+  if (!isLoading && bookmarks.length === 0) {
     return (
       <div className="text-center py-10 text-muted-foreground">
         <p>You don&#39;t have any bookmarks yet.</p>
@@ -42,5 +51,29 @@ export function BookmarkList({ layout, isPublicQuery = false }: BookmarkListProp
         <BookmarkCard key={bookmark.id} bookmark={bookmark} isListView={layout === 'list'}/>
       ))}
     </div>
+
+      {hasNextPage && (
+        <div className="text-center mt-6">
+          <Button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            variant="outline"
+          >
+            {isFetchingNextPage ? (
+              <>
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                Loading more...
+              </>
+            ) : 'Load More'}
+          </Button>
+        </div>
+      )}
+
+      {!hasNextPage && bookmarks.length > 0 && !isLoading && (
+         <div className="text-center py-10 text-muted-foreground">
+           <p>No more bookmarks to load.</p>
+         </div>
+      )}
+    </>
   );
 }

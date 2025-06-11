@@ -53,8 +53,8 @@ export async function createBookmarkAction(params: createBookmarkParams): Promis
  * @param description
  */
 const queryBookmarksImpl = async (
-  { categoryId }: queryBookmarksParams
-): Promise<ResponseWithError<Bookmark[]>> => {
+  { categoryId, cursor, limit = 10 }: queryBookmarksParams
+): Promise<ResponseWithError<{ data: Bookmark[]; nextCursor?: string }>> => {
   const res = await getUser()
   if (res?.errorMessage || !res?.data?.id) {
     throw new Error(res.errorMessage || 'Unknown error')
@@ -67,18 +67,24 @@ const queryBookmarksImpl = async (
   }
   console.log('whereCondition=', whereCondition)
   const result = await prisma.bookmark.findMany({
-    where: whereCondition
+    where: whereCondition,
+    take: limit,
+    ...(cursor && { skip: 1, cursor: { id: cursor } }),
   })
-  return { errorMessage: null, data: result }
+  let nextCursor: string | undefined = undefined
+  if (result.length === limit) {
+    nextCursor = result[limit - 1].id
+  }
+  return { errorMessage: null, data: result, nextCursor }
 }
 
-export type queryBookmarksParams = Partial<Pick<Prisma.BookmarkUncheckedCreateInput, 'categoryId'>>
+export type queryBookmarksParams = Partial<Pick<Prisma.BookmarkUncheckedCreateInput, 'categoryId'>> & { cursor?: string, limit?: number }
 
 /**
  * Query bookmarks
  * @param params
  */
-export async function queryBookmarks(params: queryBookmarksParams): Promise<ResponseWithError<Bookmark[]>> {
+export async function queryBookmarks(params: queryBookmarksParams): Promise<ResponseWithError<{ data: Bookmark[]; nextCursor?: string }>> {
   return withErrorHandle(queryBookmarksImpl)(params)
 }
 
@@ -90,19 +96,25 @@ export async function queryBookmarks(params: queryBookmarksParams): Promise<Resp
  * @param description
  */
 const queryPublicBookmarksByCategoryIdImpl = async (
-  { categoryId }: queryBookmarksParams
-): Promise<ResponseWithError<Bookmark[]>> => {
+  { categoryId, cursor, limit = 10 }: queryBookmarksParams
+): Promise<ResponseWithError<{ data: Bookmark[]; nextCursor?: string }>> => {
   const result = await prisma.bookmark.findMany({
-    where: { categoryId }
+    where: { categoryId },
+    take: limit,
+    ...(cursor && { skip: 1, cursor: { id: cursor } }),
   })
-  return { errorMessage: null, data: result }
+  let nextCursor: string | undefined = undefined
+  if (result.length === limit) {
+    nextCursor = result[limit - 1].id
+  }
+  return { errorMessage: null, data: result, nextCursor }
 }
 
 /**
  * Public Query bookmarks by categoryId
  * @param params
  */
-export async function queryPublicBookmarksByCategoryId(params: queryBookmarksParams): Promise<ResponseWithError<Bookmark[]>> {
+export async function queryPublicBookmarksByCategoryId(params: queryBookmarksParams): Promise<ResponseWithError<{ data: Bookmark[]; nextCursor?: string }>> {
   return withErrorHandle(queryPublicBookmarksByCategoryIdImpl)(params)
 }
 
