@@ -18,6 +18,8 @@ export default function PublicCollectionPage() {
     queryFn: () => queryPublicCategoriesOfUser(username),
   });
 
+  console.log('PublicCollectionPage result:', result);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -49,7 +51,7 @@ export default function PublicCollectionPage() {
                     <li
                       key={category.id}
                       className="text-lg text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors p-2 cursor-pointer"
-                      onClick={() => router.push(`/share/${username}/${category.id}`)}
+                      onClick={() => router.push(`/share/${username}/${category.shortId}`)}
                     >
                       {category.name}
                     </li>

@@ -204,18 +204,18 @@ const queryPublicCategoriesOfUserImpl = async (username: string): Promise<Respon
   if (!id) {
     return { errorMessage: 'User not found', data: null }
   }
-  const result = await prisma.category.findMany({
-    where: {
-      userId: id,
-      isPublic: true
-    }
-  })
+
+  const result = await prisma.$queryRaw<TreeCategory[]>(Prisma.sql`
+    select c.*, u.short_id from categories c left join uuidmappings u on c.id = u.uuid where c.is_public and c.user_id=${id}  
+  `)
 
   if (!result || result.length === 0) {
     return { errorMessage: 'Category not found', data: null }
   }
 
-  return { errorMessage: null, data: result as TreeCategory[] }
+  const finalResult = buildTree(result)
+
+  return { errorMessage: null, data: finalResult }
 }
 
 
