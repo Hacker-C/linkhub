@@ -3,7 +3,7 @@
 import { usePageParams } from "@/hooks/usePageParams";
 import { TypographyH2 } from "@/components/ui/typography";
 import { useQuery } from "@tanstack/react-query";
-import { queryCategoryById } from "@/actions/categories";
+import { queryCategoryByShortId } from "@/actions/categories";
 import { queryKeys } from "@/actions/lib/queryKeys";
 import React from "react";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -14,12 +14,14 @@ import useSafeLocalStorage from "@/hooks/useSafeLocalStorage";
 
 export default function Page() {
   const username = usePageParams('username')
-  const categoryid = usePageParams('categoryid')
+  const shortId = +usePageParams('shortid')
   const [layout, setLayout] = useSafeLocalStorage<'grid' | 'list'>('bookmark-list-layout', 'grid')
 
+  const params = { shortId, username }
+
   const { isLoading, data: result } = useQuery({
-    queryKey: queryKeys.queryCategoryId(categoryid),
-    queryFn: () => queryCategoryById(categoryid)
+    queryKey: queryKeys.queryCategoryId(shortId.toString()),
+    queryFn: () => queryCategoryByShortId(params)
   })
 
   if (isLoading) {
@@ -46,7 +48,7 @@ export default function Page() {
       <div className=''>
         <LayoutSwitcher currentLayout={layout} onLayoutChange={setLayout}/>
         <div className='mt-6'>
-          <BookmarkList layout={layout} isPublicQuery={true}/>
+          <BookmarkList layout={layout} isPublicQuery={true} categoryId={category.id}/>
         </div>
       </div>
     </div>

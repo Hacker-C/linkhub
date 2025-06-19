@@ -68,6 +68,11 @@ If you develop on your local machine, you can use the :
    ```bash
     pnpm dev
     ```
+10. when you add some dababase changes:
+   ```bash
+   pnpm dlx prisma generate
+   pnpm dlx prisma migrate dev --name add_table_uuidmappings
+   ```
 
 Open [http://localhost:3001](http://localhost:3000) with your browser to see the result.
 

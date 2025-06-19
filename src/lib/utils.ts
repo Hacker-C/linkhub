@@ -53,7 +53,8 @@ export function buildTree(sqlQueryList: TreeCategory[]): TreeCategory[] {
       updatedAt: item['updated_at' as keyof TreeCategory],
       userId: item['user_id' as keyof TreeCategory],
       parentId: item['parent_id' as keyof TreeCategory],
-      isSubMenuOpen: false
+      shortId: item['short_id' as keyof TreeCategory]?.toString(),
+      isSubMenuOpen: false,
     } as TreeCategory
   })
 

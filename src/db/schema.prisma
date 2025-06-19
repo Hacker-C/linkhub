@@ -99,3 +99,15 @@ model User {
 
   @@map("users")
 }
+
+model UUIdMapping {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  shortId   BigInt   @map("short_id")
+  uuid      String
+  // type of the mapping, 1:category, 2:bookmark
+  type      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("uuidmappings")
+}

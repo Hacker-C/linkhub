@@ -3,16 +3,20 @@
 import { Category, Prisma } from "@prisma/client";
 import CategoryUncheckedCreateInput = Prisma.CategoryUncheckedCreateInput;
 import { buildTree, ResponseWithError, withErrorHandle } from "@/lib/utils";
-import { getUser } from "@/actions/users";
+import { getPublicSchemaUserByUsername, getUser } from "@/actions/users";
 import { prisma } from "@/db/prisma";
 
 export type CreateCategoryParams = Pick<CategoryUncheckedCreateInput, 'isPublic' | 'name' | 'parentId'>
 
-export type TreeCategory = Category & {
+export type TreeCategory = ICategory & {
   subCategories: TreeCategory[];
   itemCount: number
   isSubMenuOpen: boolean
 };
+
+export type ICategory = Category & {
+  shortId: string
+}
 
 /**
  * Create category
@@ -20,18 +24,44 @@ export type TreeCategory = Category & {
  */
 const createCategoryImpl = async (
   params: CreateCategoryParams
-): Promise<ResponseWithError<Category>> => {
+): Promise<ResponseWithError<ICategory>> => {
   const res = await getUser()
   if (res?.errorMessage || !res?.data?.id) {
     throw new Error(res.errorMessage || 'Unknown error')
   }
-  const result = await prisma.category.create({
-    data: {
-      userId: res.data.id!,
-      ...params
-    }
+  const result = await new Promise((resolve, reject) => {
+    prisma.$transaction(async (tx) => {
+      const category = await tx.category.create({
+        data: {
+          userId: res?.data?.id as string,
+          ...params
+        }
+      })
+      const uuidmappingDB = await prisma.uUIdMapping.findFirst({
+        where: {
+          userId: res.data?.id as string
+        },
+        orderBy: {
+          createdAt: 'desc' // 按创建时间降序排列
+        },
+      })
+      const newShortId = uuidmappingDB ? ++uuidmappingDB.shortId : 1
+      const uuidMapping = await tx.uUIdMapping.create({
+        data: {
+          userId: res?.data?.id as string,
+          type: '1',
+          shortId: newShortId,
+          uuid: category.id,
+        }
+      })
+      return { ...category, shortId: uuidMapping.shortId }
+    }).then((result) => {
+      resolve(result)
+    }).catch((error) => {
+      reject(error)
+    })
   })
-  return { errorMessage: null, data: result }
+  return { errorMessage: null, data: result as ICategory }
 }
 
 /**
@@ -69,17 +99,19 @@ const queryTreeCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory
       WITH RECURSIVE category_tree AS (
           -- Base Case: Select the starting categories
           -- Either the specific 'id' provided, or all root categories for the user
-          SELECT id,
-                 name,
-                 parent_id,
-                 is_public,
-                 created_at,
-                 updated_at,
-                 user_id,
+          SELECT c.id,
+                 c.name,
+                 c.parent_id,
+                 c.is_public,
+                 c.created_at,
+                 c.updated_at,
+                 c.user_id,
+                 u.short_id,
                  0 as level
-          FROM "categories"
-          WHERE user_id = ${userId}
-            AND categories.parent_id IS NULL
+          FROM categories c
+            LEFT JOIN uuidmappings u ON u.uuid = c.id
+          WHERE c.user_id = ${userId}
+            AND c.parent_id IS NULL
 
           UNION ALL
 
@@ -91,9 +123,11 @@ const queryTreeCategoriesImpl = async (): Promise<ResponseWithError<TreeCategory
                  c.created_at,
                  c.updated_at,
                  c.user_id,
+                 u.short_id,
                  ct.level + 1
           FROM "categories" c
                    JOIN category_tree ct ON c.parent_id = ct.id
+                   LEFT JOIN uuidmappings u ON u.uuid = c.id
           WHERE c.user_id = ${userId} -- Ensure we stay within the user's categories
       )
       SELECT *
@@ -127,6 +161,35 @@ const queryCategoryByIdImpl = async (id: string): Promise<ResponseWithError<Tree
   }
 
   return { errorMessage: null, data: result as TreeCategory }
+}
+
+type QueryCategoryByShortIdParams = {
+  username: string;
+  shortId: number;
+}
+
+/**
+ * Query category
+ * @param params
+ */
+const queryCategoryByShortIdImpl = async ({ username, shortId }: QueryCategoryByShortIdParams): Promise<ResponseWithError<TreeCategory>> => {
+  const userRes = await getPublicSchemaUserByUsername(username)
+  if (userRes.errorMessage || !userRes.data) {
+    throw new Error(userRes.errorMessage || 'User not found');
+  }
+  const uuidMapRes = await prisma.uUIdMapping.findFirst({
+    select: {
+      uuid: true
+    },
+    where: {
+      shortId,
+      userId: userRes.data.id
+    }
+  })
+  if (!uuidMapRes) {
+    throw new Error('Category not found');
+  }
+  return queryCategoryByIdImpl(uuidMapRes.uuid);
 }
 
 /**
@@ -186,10 +249,18 @@ export async function queryCategoryById(id: string): Promise<ResponseWithError<T
 }
 
 /**
+ * Query category by shortId
+ * @param params
+ */
+export async function queryCategoryByShortId(params: QueryCategoryByShortIdParams): Promise<ResponseWithError<TreeCategory>> {
+  return withErrorHandle(queryCategoryByShortIdImpl)(params)
+}
+
+/**
  * Create category
  * @param params
  */
-export async function createCategoryAction(params: CreateCategoryParams): Promise<ResponseWithError<Category>> {
+export async function createCategoryAction(params: CreateCategoryParams): Promise<ResponseWithError<ICategory>> {
   return withErrorHandle(createCategoryImpl)(params)
 }
 

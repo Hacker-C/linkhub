@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (errorMessage || !user) {
           return
         }
-        console.log('user=', user);
         setIsLoggedIn(true);
         setUser(user);
       } catch (error) {

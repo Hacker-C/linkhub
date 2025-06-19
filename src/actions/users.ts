@@ -187,6 +187,20 @@ const getPublicSchemaUserImpl = async (userId: string): Promise<ResponseWithErro
   return { errorMessage: null, data: user }
 }
 
+/**
+ * Get public schema user by username
+ * @param username
+ */
+const getPublicSchemaUserByUsernameImpl = async (username: string): Promise<ResponseWithError<PublicSchemaUser>> => {
+  const user = await prisma.user.findFirst({
+    where: { username },
+  })
+  if (!user) {
+    throw new Error('User not found!')
+  }
+  return { errorMessage: null, data: user }
+}
+
 export type PublicSchemaUser = PublicSchemaUserFromPrisma
 
 /* endregion ########## actions implement ########## */
@@ -240,6 +254,14 @@ export async function deleteUserAction(): Promise<ResponseWithError<{error: Auth
  */
 export async function getPublicSchemaUser(userId: string) {
   return withErrorHandle(getPublicSchemaUserImpl)(userId)
+}
+
+/**
+ * Get the current authenticated user
+ * @returns The user object or null if not authenticated or error occurs
+ */
+export async function getPublicSchemaUserByUsername(username: string) {
+  return withErrorHandle(getPublicSchemaUserByUsernameImpl)(username)
 }
 
 /* endregion ########## actions for client ########## */

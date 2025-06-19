@@ -19,9 +19,9 @@ export function ShareCategories({category, variant} : ShareCategoriesProps) {
     e.stopPropagation()
     setShareDialogOpen(true)
   }
-  const { id } = category || {}
+  const { shortId } = category || {}
   const { user } = useAuth()
-  const url = `/share/${user?.username}/${id}`
+  const url = `/share/${user?.username}/${shortId}`
   return (
     <>
       {

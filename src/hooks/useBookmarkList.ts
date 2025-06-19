@@ -1,10 +1,10 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/actions/lib/queryKeys";
 import { queryBookmarks, queryPublicBookmarksByCategoryId } from "@/actions/bookmarks";
-import { useParams } from "next/navigation";
 import { CATEGORY_DEFAULT_ID, OPERATIONS } from "@/lib/constants";
 import { ResponseWithError } from "@/lib/utils";
 import { Bookmark } from "@prisma/client";
+import { usePageParams } from "@/hooks/usePageParams";
 
 /**
  * Operate Bookmark cache data
@@ -54,12 +54,12 @@ const operateBookmarkCacheData = (queryClient : QueryClient) => (
 /**
  * useBookmarkList
  */
-export const useBookmarkList = (isPublicQuery: boolean = false) => {
-  const params = useParams()
-  const categoryId = params.categoryid as string
+export const useBookmarkList = (isPublicQuery: boolean = false, categoryId?: string) => {
+  const adminCategoryId = usePageParams('categoryid')
+  const finalCategoryId = isPublicQuery ? categoryId : adminCategoryId
   const queryClient = useQueryClient()
 
-  const queryDBCategoryId = (categoryId === CATEGORY_DEFAULT_ID || !categoryId) ? null : categoryId
+  const queryDBCategoryId = (finalCategoryId === CATEGORY_DEFAULT_ID || !finalCategoryId) ? null : finalCategoryId
   const { isLoading, data: queryResult, refetch } = useQuery({
     queryKey: queryKeys.queryBookmarksByCategoryId(queryDBCategoryId as string),
     queryFn: () => isPublicQuery
