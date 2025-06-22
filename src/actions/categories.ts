@@ -25,44 +25,64 @@ export type ICategory = Category & {
 const createCategoryImpl = async (
   params: CreateCategoryParams
 ): Promise<ResponseWithError<ICategory>> => {
-  const res = await getUser()
-  if (res?.errorMessage || !res?.data?.id) {
-    throw new Error(res.errorMessage || 'Unknown error')
-  }
-  const result = await new Promise((resolve, reject) => {
-    prisma.$transaction(async (tx) => {
+  try {
+    const res = await getUser();
+    if (res?.errorMessage || !res?.data?.id) {
+      throw new Error(res.errorMessage || 'Unknown error');
+    }
+
+    const userId = res.data.id!
+
+    // 增加事务超时时间
+    const result = await prisma.$transaction(async (tx) => {
       const category = await tx.category.create({
         data: {
-          userId: res?.data?.id as string,
+          userId,
           ...params
         }
-      })
-      const uuidmappingDB = await prisma.uUIdMapping.findFirst({
+      });
+
+      // 优化查询：使用更精确的查询条件
+      const latestMapping = await tx.uUIdMapping.findFirst({
         where: {
-          userId: res.data?.id as string
+          userId,
+          type: '1' // 假设你想查询相同类型的记录
         },
         orderBy: {
-          createdAt: 'desc' // 按创建时间降序排列
+          shortId: 'desc' // 直接按shortId降序更高效
         },
-      })
-      const newShortId = uuidmappingDB ? ++uuidmappingDB.shortId : 1
+      });
+
+      const newShortId = latestMapping ? ++latestMapping.shortId : 1;
+
       const uuidMapping = await tx.uUIdMapping.create({
         data: {
-          userId: res?.data?.id as string,
+          userId,
           type: '1',
           shortId: newShortId,
           uuid: category.id,
         }
-      })
-      return { ...category, shortId: uuidMapping.shortId }
-    }).then((result) => {
-      resolve(result)
-    }).catch((error) => {
-      reject(error)
+      });
+
+      return {
+        ...category,
+        shortId: uuidMapping.shortId
+      } as unknown as ICategory;
+    }, {
+      maxWait: 10000, // 10秒最大等待
+      timeout: 10000  // 10秒超时
     })
-  })
-  return { errorMessage: null, data: result as ICategory }
-}
+
+    return { errorMessage: null, data: result };
+  } catch (error) {
+    console.error('Create category failed:', error);
+    return {
+      errorMessage: error instanceof Error ? error.message : 'Transaction failed',
+      data: null
+    };
+  }
+};
+
 
 /**
  * Update category
