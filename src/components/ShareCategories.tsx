@@ -21,7 +21,7 @@ export function ShareCategories({category, variant} : ShareCategoriesProps) {
   }
   const { shortId } = category || {}
   const { user } = useAuth()
-  const url = `/share/${user?.username}/${shortId}`
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/share/${user?.username}/${shortId}`
   return (
     <>
       {
